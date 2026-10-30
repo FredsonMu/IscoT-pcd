@@ -9,6 +9,7 @@ Rede cliente-servidor com um servidor central, o **IscoT**. Sensores (clientes a
 
 | Momento | Data |
 |---|---|
+| Primeira apresentação do projeto ao professor | **sex 6 nov 2026** (fases 1 e 2 a correr) |
 | Entrega e discussão intermédia | **10–13 nov 2026**, no turno de laboratório (sem entrega formal: levar o projeto a correr) |
 | Entrega final e discussões | **15–18 dez 2026** (entrega formal no Moodle; confirmar o prazo) |
 

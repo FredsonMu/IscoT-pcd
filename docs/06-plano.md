@@ -11,6 +11,37 @@ Da apresentação do projeto pelo professor (23 out):
 
 Confirmar em que dia de 10–13 é o nosso turno.
 
+## Duas apresentações
+
+| Data | O que é | O que levar |
+|---|---|---|
+| **sex 6 nov** | **primeira apresentação do projeto ao professor** (na nossa aula) | fases 1 e 2 a correr (ver abaixo) |
+| **10–13 nov** | **entrega e discussão intermédia oficial** (obrigatória e eliminatória) | fases 1 e 2 + fase 3 como objetivo nosso |
+
+Se o professor tratar o dia 6 como a entrega oficial, o que está em "Dia 6" é o mínimo garantido para passar. Perguntar-lhe no dia 6 se a discussão de 10–13 se mantém.
+
+## O que levar a 6 de novembro (fases 1 e 2, sem concorrência)
+
+| O que mostrar | Classes que têm de estar escritas | Quem |
+|---|---|---|
+| Mensagens no formato do professor: `LightSensorMessage [light=320.0, area=Sala, getType()=SENSOR]` | `Area`, `DeviceType`, `Message`, `SensorMessage`, `LightSensorMessage`, `TemperatureSensorMessage`, `OrderMessage`, `AreaLightingOrderMessage` | Celso |
+| Mensagens a entrar em filas separadas por tópico, por ordem (FIFO), com ids | `Topic`, `TopicManager` | Celso |
+| Formulário: área + tipo de mensagem + valor → Publicar → ver as filas; "Consumir cabeça" tira a mais antiga | `TopicTestFrame` | Fredson |
+| Janela de atuador com o estado e o histórico `Lâmpada ligada - HH:MM:SS` | `ActuatorFrame` + histórico no `ActuatorClient` | Fredson |
+| Arquitetura planeada | diagrama do `docs/02-arquitetura.md` | os dois |
+
+Não é preciso para dia 6: servidor, sockets, threads, latch, e as janelas de sensor e decisor (podem esperar pelo código base da GUI do professor).
+
+### Calendário até dia 6
+
+| Data | O quê | Pronto quando |
+|---|---|---|
+| sáb 31 out | **CP0 · arranque** | os dois clonaram o repositório; Celso começa `common` + `Topic`; Fredson começa o formulário e a janela do atuador |
+| seg 2 nov | **CP1 · juntar** | `common` completo com o `toString` do professor; o formulário já publica no `Topic` real |
+| qua 4 nov | **CP2 · tudo a correr** | demo completa; `IscotTests` grupo 1 a passar; cada um explica o código do outro |
+| qui 5 nov | **CP3 · ensaio** | apresentação de 5 minutos cronometrada; perguntas cruzadas com o `08`; tag `checkpoint-0` |
+| sex 6 nov | **apresentação** | demo + plano + perguntas ao professor (anotar as respostas no `07` e no `08`) |
+
 ## O que temos de levar a 10–13 de novembro
 
 O enunciado pede as "fases iniciais, referentes a aspetos ainda sem concorrência":
@@ -45,13 +76,13 @@ Porquê esta divisão: cada um trabalha num pacote diferente (menos conflitos no
 
 ## Checkpoints até 10–13 de novembro
 
+Até dia 6, seguir o calendário de cima. Depois:
+
 | Data | Checkpoint | Pronto quando |
 |---|---|---|
-| sáb 31 out | **CP0 · arranque** (30 min) | os dois leram `docs/01` a `03` e a apresentação do professor; os dois clonaram o repositório e o projeto abre sem erros no Eclipse |
-| ter 3 nov | **CP1 · peças da fase 1–2** | Celso: `common` completo (mensagens com o `toString` do professor), `Topic`, `TopicManager`. Fredson: janelas desenhadas, histórico com hora, formulário desenhado. Troca de explicações. |
-| qui 5 nov | **CP2 · fases 1–2 integradas** | o formulário publica mensagens tipadas no `Topic` real e mostra as filas; `IscotTests` grupo 1 passa; README atualizado. **Já é o mínimo para passar a entrega intermédia.** |
-| seg 9 nov | **CP3 · fase 3** | servidor aceita ligações; os 4 clientes do cenário do professor registam-se com ids únicos; `8 Tipo invalido` recusado; `ServerMonitorFrame` mostra os clientes |
-| véspera do turno | **CP4 · ensaio** | apresentação cronometrada, **cada um apresenta a parte do outro**; perguntas cruzadas com o `08`; tag `checkpoint-1` |
+| sex 6 nov | **apresentação do dia 6** | fases 1 e 2 a correr (ver acima). **Já é o mínimo para passar a entrega intermédia.** |
+| seg 9 nov | **CP4 · fase 3** | servidor aceita ligações; os 4 clientes do cenário do professor registam-se com ids únicos; `8 Tipo invalido` recusado; `ServerMonitorFrame` mostra os clientes |
+| véspera do turno | **CP5 · ensaio** | apresentação cronometrada, **cada um apresenta a parte do outro**; perguntas cruzadas com o `08`; tag `checkpoint-1` |
 | 10–13 nov | **Entrega intermédia** | demo + plano + perguntas ao professor (anotar respostas no `07` e no `08`) |
 
 ## Depois da entrega intermédia

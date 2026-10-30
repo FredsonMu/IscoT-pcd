@@ -1,7 +1,54 @@
 IscoT - APRESENTAÇÃO DO CHECKPOINT 1 (ENTREGA E DISCUSSÃO INTERMÉDIA)
 ====================================================================
 Grupo: Fredson e Celso
-Quando: 10 a 13 de novembro de 2026, no nosso turno de laboratório (confirmar o dia).
+Quando: DUAS apresentações
+  sex 6 nov       primeira apresentação do projeto ao professor (na nossa aula):
+                  fases 1 e 2 a correr. Ver secção 0.
+  10-13 nov       entrega e discussão intermédia OFICIAL, no nosso turno de
+                  laboratório (confirmar o dia): fases 1, 2 e, se possível, 3.
+  Se o professor tratar o dia 6 como a entrega oficial, a secção 0 é o mínimo
+  garantido para passar. Perguntar-lhe no dia 6 se a discussão de 10-13 se mantém.
+
+
+0. DIA 6 DE NOVEMBRO - O QUE LEVAR
+----------------------------------
+FASES 1 E 2, sem concorrência (sem servidor, sockets, threads nem latch).
+
+O QUE MOSTRAR                                   CLASSES                         QUEM
+Mensagens no formato do professor:              Area, DeviceType, Message,      Celso
+  LightSensorMessage [light=320.0, area=Sala,   SensorMessage,
+  getType()=SENSOR]                             LightSensorMessage,
+                                                TemperatureSensorMessage,
+                                                OrderMessage,
+                                                AreaLightingOrderMessage
+Mensagens em filas separadas por tópico,        Topic, TopicManager             Celso
+  por ordem (FIFO), com ids
+Formulário: área + tipo + valor -> Publicar;    TopicTestFrame                  Fredson
+  "Consumir cabeça" tira a mais antiga
+Atuador com estado e histórico                  ActuatorFrame + histórico       Fredson
+  "Lâmpada ligada - HH:MM:SS"                   (ActuatorClient)
+Arquitetura planeada                            diagrama de docs/02             os dois
+
+NÃO é preciso no dia 6: servidor, sockets, threads, latch, e as janelas de sensor e
+decisor (podem esperar pelo código base da GUI do professor).
+
+CALENDÁRIO ATÉ DIA 6
+  sáb 31 out   CP0  repositório clonado nos dois PCs; Celso começa common + Topic;
+                    Fredson começa o formulário e a janela do atuador
+  seg  2 nov   CP1  common completo com o toString do professor; o formulário já
+                    publica no Topic real
+  qua  4 nov   CP2  demo completa; IscotTests grupo 1 a passar; cada um explica o
+                    código do outro
+  qui  5 nov   CP3  ensaio de 5 minutos cronometrado; perguntas cruzadas com a
+                    secção 5; tag checkpoint-0
+  sex  6 nov        apresentação; perguntas ao professor (secção 7)
+
+GUIÃO DO DIA 6 (cerca de 5 minutos) - versão curta da secção 4
+  [1 min] O problema (Celso)
+  [1 min] Arquitetura planeada (Fredson)
+  [2 min] Demo das fases 1-2 (secção 4, "DEMO FASES 1-2", passos 1 a 7)
+  [1 min] Próximos passos e perguntas ao professor
+  Saltar a "DEMO FASE 3": é para 10-13 nov.
 
 
 1. O QUE É PEDIDO
@@ -237,7 +284,7 @@ R: Cada um num pacote diferente (Celso: common e server; Fredson: gui e client),
 
 P (ao Fredson): Explica-me o Topic.publish.
 P (ao Celso):   Explica-me o histórico do atuador e o TopicTestFrame.
-R: É a pergunta para ver se os dois sabem tudo. Ensaiar no CP4: cada um apresenta
+R: É a pergunta para ver se os dois sabem tudo. Ensaiar no CP3 e no CP5: cada um apresenta
    e explica o código do outro.
 
 
@@ -302,16 +349,16 @@ O que fazemos conforme a resposta:
     esperar também por "há subscritores".
 
 
-8. CALENDÁRIO ATÉ LÁ
---------------------
-sáb 31 out   CP0  os dois leram docs/01 a 03 e a apresentação do professor;
-                  repositório clonado e a abrir no Eclipse
-ter  3 nov   CP1  common completo (Celso) e janelas desenhadas (Fredson);
-                  troca de explicações
-qui  5 nov   CP2  fases 1-2 integradas: formulário a publicar mensagens tipadas no
-                  Topic real; IscotTests grupo 1 a passar. MÍNIMO GARANTIDO.
-seg  9 nov   CP3  fase 3: cenário da sala (4 clientes) registado no servidor,
+8. CALENDÁRIO COMPLETO
+----------------------
+sáb 31 out   CP0  repositório clonado; cada um começa a sua parte (secção 0)
+seg  2 nov   CP1  common completo; formulário a publicar no Topic real
+qua  4 nov   CP2  fases 1-2 a correr; IscotTests grupo 1 a passar.
+                  MÍNIMO GARANTIDO.
+qui  5 nov   CP3  ensaio do dia 6; tag checkpoint-0
+sex  6 nov        PRIMEIRA APRESENTAÇÃO (fases 1-2)
+seg  9 nov   CP4  fase 3: cenário da sala (4 clientes) registado no servidor,
                   tipo inválido recusado, GUI do servidor com os clientes
-véspera      CP4  ensaio cronometrado, cada um apresenta a parte do outro;
+véspera      CP5  ensaio completo, cada um apresenta a parte do outro;
                   perguntas cruzadas com a secção 5; tag checkpoint-1
-10-13 nov         entrega e discussão intermédia
+10-13 nov         ENTREGA E DISCUSSÃO INTERMÉDIA OFICIAL (fases 1-3)
