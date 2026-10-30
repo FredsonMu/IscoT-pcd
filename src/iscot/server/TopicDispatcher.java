@@ -16,7 +16,7 @@ package iscot.server;
  *       1. head = topic.waitForHead()               (dorme se a fila estiver vazia)
  *       2. subs = topic.subscribersSnapshot()       (quem está subscrito agora)
  *       3. latch = novo ModifiedCountdownLatch(subs.size())
- *       4. topic.setPending(head.id, latch)          (ANTES de enviar)
+ *       4. topic.setPending(head.getMessageId(), latch)          (ANTES de enviar)
  *       5. para cada subscritor: handler.send(head); se der IOException,
  *          latch.countdown() para não ficar à espera de um cliente morto
  *       6. latch.await(TIMEOUT)
@@ -27,7 +27,7 @@ package iscot.server;
  *
  * LIGAÇÕES
  *   Criado e arrancado por: TopicManager (start, nunca run).
- *   Usa: Topic, ModifiedCountdownLatch, ClientHandler.send, Event.
+ *   Usa: Topic, ModifiedCountdownLatch, ClientHandler.send, Message.
  *
  * PORQUÊ UMA THREAD POR TÓPICO
  *   Cada tópico avança de forma independente: a lâmpada lenta da sala não atrasa a rega

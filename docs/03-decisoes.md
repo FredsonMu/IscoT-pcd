@@ -114,7 +114,7 @@ Alterar componentes diretamente da thread recetora parece funcionar, mas é uma 
 A primeira versão tinha 29 classes, uma por responsabilidade. Passámos para 23, juntando o que é sempre usado em conjunto:
 - `Role` e a regra dos nomes de tópicos foram para dentro do `DeviceType`;
 - o histórico foi para dentro do `ActuatorClient`;
-- pedido e resposta de registo ficaram numa só `RegisterMessage`;
+- pedido e resposta de registo ficaram numa só mensagem de registo (hoje `RegistrationMessage`, ver D20);
 - os três testes ficaram num só `IscotTests`, com três grupos.
 
 | | mais classes | menos classes |
@@ -125,3 +125,23 @@ A primeira versão tinha 29 classes, uma por responsabilidade. Passámos para 23
 O que não juntámos, e porquê:
 - **as 6 classes do servidor e o latch**: são onde está a matéria de concorrência, e cada uma tem um papel diferente no produtor-consumidor;
 - **as janelas e a lógica dos clientes**: a fase 1 pede GUI antes de haver rede, e os componentes gráficos podem vir a ser dados pelo professor.
+
+Depois da apresentação do projeto pelo professor (D20–D22) voltámos a ter 29 ficheiros: o `Event` genérico deu lugar a 7 classes de mensagens tipadas (pequenas, só com dados) e entrou a GUI opcional do servidor. A estrutura do servidor não mudou.
+
+### D20 · Mensagens tipadas em vez de um `Event` genérico
+A apresentação do projeto mostra `LightSensorMessage [light=320.0, area=Sala, getType()=SENSOR]` e `AreaLightingOrderMessage [state=true, area=Sala, getType()=DECIDER]`, e chama `RegistrationMessage` ao registo.
+
+| | `Event(topic, content)` genérico (versão anterior) | mensagens tipadas (escolhida) |
+|---|---|---|
+| Ganha | uma só classe para tudo | campos com tipo (`double light`, `boolean state`), verificados pelo compilador; sem parsing de texto; é o que o professor mostra |
+| Perde | parsing de `"valor=320"`; erros só em execução; o cliente escolhia o tópico | mais classes (uma por grandeza e canal) |
+
+Organização: `Message` (área, `messageId`, `senderId`, `getType()`) → `SensorMessage` e `OrderMessage` (abstratas, cada uma com `getSubject()`) → as concretas. O servidor trata todas as leituras com um só `instanceof SensorMessage` e todas as ordens com um só `instanceof OrderMessage`; acrescentar uma grandeza nova não mexe no servidor.
+
+### D21 · Quem escolhe o tópico: o servidor
+Antes, o cliente enviava o nome do tópico dentro do `Event`. Agora o cliente envia só a mensagem tipada, e o servidor calcula o tópico (`area/grandeza/leituras` ou `area/grandeza/ordens`) e valida o papel de quem envia. Ganha: "cada cliente apenas conhece o servidor"; um sensor não consegue publicar no tópico errado; uma lâmpada não consegue dar ordens. Perde: o servidor tem de conhecer as classes de mensagem (o que já acontecia, por serem partilhadas no pacote `common`).
+
+### D22 · Papéis em inglês, GUI do servidor, código base da GUI
+- `Role` passa a `SENSOR`, `DECIDER`, `ACTUATOR`, os valores que o professor mostra em `getType()`. Os tipos de dispositivo (`LAMPADA`, `VENTILADOR`, …) continuam em português, porque são o que escrevemos nos argumentos.
+- Acrescentámos o atuador `VENTILADOR`, que aparece nas figuras do professor, e a `ServerMonitorFrame`, a GUI opcional do servidor ("mostrando as mensagens trocadas").
+- O professor vai dar "código base apenas para a GUI". Fazemos janelas mínimas para a demo e, quando sair, trocamos só o interior das janelas, mantendo os métodos públicos que os clientes usam (D17).

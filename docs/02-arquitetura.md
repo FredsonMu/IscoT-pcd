@@ -6,13 +6,13 @@ Exemplo concreto: a luz da sala. O sensor publica leituras em `sala/luz/leituras
 
 ```mermaid
 flowchart LR
-  S["Sensor luz (sala)"] -- "Event valor=120" --> T1
+  S["Sensor luz (sala)"] -- "LightSensorMessage light=320" --> T1
   subgraph Servidor IscoT
     T1[["Tópico sala/luz/leituras"]]
     T2[["Tópico sala/luz/ordens"]]
   end
   T1 -- entrega a cabeça --> D["Decisor luz (sala)"]
-  D -- "Event LIGAR" --> T2
+  D -- "AreaLightingOrderMessage state=true" --> T2
   T2 -- entrega a cabeça --> L1["Lâmpada 1"]
   T2 -- entrega a cabeça --> L2["Lâmpada 2"]
   L1 -. Ack .-> T2
@@ -28,7 +28,7 @@ flowchart LR
 | `iscot.sync` | mecanismos de coordenação escritos por nós (exigência do enunciado) | `ModifiedCountdownLatch` |
 | `iscot.server` | o broker | `Server`, `ClientHandler`, `TopicManager`, `Topic`, `TopicDispatcher` |
 | `iscot.client` | lógica dos clientes, sem Swing | `ClientMain`, `BrokerConnection`, `SensorClient`, `DecisorClient`, `ActuatorClient` (com o histórico) |
-| `iscot.gui` | janelas, sem rede | `TopicTestFrame`, `SensorFrame`, `DecisorFrame`, `ActuatorFrame` |
+| `iscot.gui` | janelas, sem rede | `TopicTestFrame`, `SensorFrame`, `DecisorFrame`, `ActuatorFrame`, `ServerMonitorFrame` (opcional) |
 | `iscot.test` | testes que se correm como programas | `IscotTests` |
 
 **Regra de dependências** (quem pode usar quem):
@@ -36,6 +36,7 @@ flowchart LR
 ```mermaid
 flowchart TD
   gui --> client
+  server -.-> gui
   client --> common
   gui --> common
   server --> common
@@ -47,7 +48,30 @@ flowchart TD
 
 - `common` não depende de ninguém: é o "contrato" entre servidor e clientes.
 - `server` **nunca** usa `client` nem `gui`, e vice-versa. Só se falam por mensagens.
-- Exceção consciente: o `TopicTestFrame` (fase 2) usa `server.Topic` diretamente, porque nessa fase ainda não há rede.
+- Exceções conscientes: o `TopicTestFrame` (fase 2) usa `server.Topic` diretamente, porque nessa fase ainda não há rede; e o `Server` abre a `ServerMonitorFrame` (GUI opcional do servidor, sugerida pelo professor), que só recebe texto para mostrar.
+
+## Mensagens (formato do professor)
+
+A apresentação do projeto define as mensagens com classes próprias, cada uma com a área e o tipo de quem a envia:
+
+```text
+LightSensorMessage [light=320.0, area=Sala, getType()=SENSOR]
+AreaLightingOrderMessage [state=true, area=Sala, getType()=DECIDER]
+```
+
+| Classe | Quem envia | getType() | Tópico onde o servidor a põe |
+|---|---|---|---|
+| `RegistrationMessage` | cliente (pedido) / servidor (resposta) | — | nenhum: é o registo |
+| `LightSensorMessage` | sensor de luz | `SENSOR` | `<area>/luz/leituras` |
+| `TemperatureSensorMessage` | sensor de temperatura | `SENSOR` | `<area>/temperatura/leituras` |
+| `AreaLightingOrderMessage` | decisor de luz | `DECIDER` | `<area>/luz/ordens` |
+| `AreaClimateOrderMessage` | decisor de clima | `DECIDER` | `<area>/temperatura/ordens` |
+| `AckMessage` | decisor ou atuador | — | nenhum: faz descer o latch do tópico subscrito |
+| `ReceptionConfirmationMessage` (extra) | atuador | `ACTUATOR` | nenhum |
+
+**O cliente nunca escreve o nome do tópico.** Envia uma mensagem tipada; o servidor calcula o tópico a partir da área e da grandeza da mensagem, e verifica que quem envia tem o papel certo (só sensores enviam leituras, só decisores enviam ordens). É o que a apresentação quer dizer com "cada cliente apenas conhece o servidor a que se liga". Os tópicos são uma organização interna do servidor.
+
+Humidade/rega e chuva/janelas seguem o mesmo padrão e entram quando fizermos essas automações.
 
 ## Classe a classe: quem liga a quem
 
@@ -56,7 +80,7 @@ flowchart TD
 | `Server` | servidor central, ligação inicial, id único | `TopicManager`, `ClientHandler` | `ClientHandler` |
 | `ClientHandler` | "thread dedicada por cliente", registo, recusa de tipo | `Server`, `Topic`, `DeviceType`, mensagens | `Server` (cria), `TopicDispatcher` (send) |
 | `TopicManager` | gerir os tópicos e as suas filas | `Topic`, `TopicDispatcher` | `ClientHandler` |
-| `Topic` | fila por tópico, ciclo de vida do evento | `Event`, `ModifiedCountdownLatch` | `ClientHandler`, `TopicDispatcher`, `TopicTestFrame` |
+| `Topic` | fila por tópico, ciclo de vida do evento | `Message`, `ModifiedCountdownLatch` | `ClientHandler`, `TopicDispatcher`, `TopicTestFrame` |
 | `TopicDispatcher` | "avança para o próximo evento quando o da cabeça é consumido" | `Topic`, latch, `ClientHandler` | `TopicManager` (cria) |
 | `ModifiedCountdownLatch` | registar o consumo por cada cliente | — | `TopicDispatcher`, `Topic` |
 | `ClientMain` | argumentos do main, ligação automática | `BrokerConnection`, clientes | — (ponto de entrada) |
@@ -75,7 +99,7 @@ sequenceDiagram
   participant T as Topic sala/luz/ordens
   participant X as TopicDispatcher
   participant L as Lâmpadas (2)
-  D->>H: Event "LIGAR"
+  D->>H: AreaLightingOrderMessage(Sala, true)
   H->>T: publish() + notifyAll()
   X->>T: waitForHead() acorda e espreita a cabeça
   X->>X: latch = new ModifiedCountdownLatch(2)
@@ -97,14 +121,14 @@ sequenceDiagram
   C->>B: new BrokerConnection(ip, porto)
   B->>S: liga (Socket)
   S->>H: accept() → new ClientHandler(socket).start()
-  B->>H: RegisterMessage.pedido("sala", "LAMPADA")
+  B->>H: RegistrationMessage.request("sala", "LAMPADA")
   H->>H: Area.parse / DeviceType.parse
   alt tipo existe
     H->>S: newDeviceId()
     H->>H: subscreve sala/luz/ordens
-    H->>B: RegisterMessage.resposta(aceite, "sala-lampada-1")
+    H->>B: RegistrationMessage.reply(aceite, "sala-lampada-1")
   else tipo não existe
-    H->>B: RegisterMessage.resposta(recusado, motivo)
+    H->>B: RegistrationMessage.reply(recusado, motivo)
     H->>H: fecha o socket
   end
 ```
@@ -116,7 +140,7 @@ Pergunta típica da oral: "quantas threads tem o vosso sistema e onde é que cad
 | Thread | Onde | Quantas | Faz | Bloqueia em |
 |---|---|---|---|---|
 | main do servidor | `Server` | 1 | aceita ligações | `accept()` |
-| `ClientHandler` | servidor | 1 por cliente | registo; lê `Event` e `AckMessage` | `readObject()` |
+| `ClientHandler` | servidor | 1 por cliente | registo; lê `SensorMessage`/`OrderMessage` e `AckMessage` | `readObject()` |
 | `TopicDispatcher` | servidor | 1 por tópico | entrega a cabeça, espera os acks, avança | `waitForHead()`, `latch.await()` |
 | main do cliente | `ClientMain` | 1 por cliente | liga, regista, abre a janela | — |
 | recetora | decisor, atuador | 1 | lê eventos, reage, envia ack | `readObject()` |
@@ -158,8 +182,8 @@ Pergunta típica da oral: "quantas threads tem o vosso sistema e onde é que cad
 | Fase | Enunciado | Classes |
 |---|---|---|
 | 1 | GUI | `gui/*`, histórico do `ActuatorClient` |
-| 2 | estrutura de tópicos | `Area`, `DeviceType`, `Event`, `Topic`, `TopicManager`, `TopicTestFrame`, `IscotTests` (grupo 1) |
-| 3 | servidor e ligação inicial | `Server`, `ClientHandler` (registo), `ClientMain`, `BrokerConnection`, `RegisterMessage` |
+| 2 | estrutura de tópicos | `Area`, `DeviceType`, `Message`, `SensorMessage`, `OrderMessage` e filhas, `Topic`, `TopicManager`, `TopicTestFrame`, `IscotTests` (grupo 1) |
+| 3 | servidor e ligação inicial | `Server`, `ClientHandler` (registo), `ClientMain`, `BrokerConnection`, `RegistrationMessage`, `ServerMonitorFrame` (opcional) |
 | 4 | troca de mensagens | `Message`, `AckMessage`, ciclo do `ClientHandler`, os 3 clientes |
 | 5 | CountDownLatch | `ModifiedCountdownLatch`, `TopicDispatcher`, `IscotTests` (grupos 2 e 3) |
 | 6 (extra) | confirmações de execução | `ReceptionConfirmationMessage` |

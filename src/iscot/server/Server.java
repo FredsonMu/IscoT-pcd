@@ -16,10 +16,12 @@ package iscot.server;
  *   - newDeviceId(area, tipo), synchronized: devolve algo como "sala-lampada-3"
  *     e incrementa o contador.
  *   - getTopics(): dá acesso ao TopicManager aos ClientHandler.
+ *   - (opcional) se arrancar com o argumento "gui" (ex.: "8080 gui"), abre a
+ *     ServerMonitorFrame e passa-a aos ClientHandler para registarem as mensagens.
  *
  * LIGAÇÕES
- *   Cria: TopicManager (1), ClientHandler (1 por cliente).
- *   É usado por: ClientHandler (ids e tópicos).
+ *   Cria: TopicManager (1), ClientHandler (1 por cliente), ServerMonitorFrame (opcional).
+ *   É usado por: ClientHandler (ids, tópicos, monitor).
  *
  * THREADS
  *   A thread main fica sempre presa no accept(). Por isso o atendimento TEM de ser
@@ -36,9 +38,10 @@ package iscot.server;
  *     Perguntar se conta como "equivalente da biblioteca" proibido.
  *   - UUID.randomUUID(): único sem coordenação, mas ilegível nos logs e na GUI.
  *
- * DÚVIDAS
- *   - O servidor também deve ter GUI (ver tópicos e filas em tempo real)? Não é pedido,
- *     mas ajudava na demo. A consola pode chegar.
+ * GUI DO SERVIDOR (respondido na apresentação do projeto)
+ *   "o servidor pode funcionar sem GUI; uma GUI minimal pode ajudar a monitorizar o
+ *   estado do sistema, p.ex. mostrando as mensagens trocadas". É opcional; fazemos a
+ *   ServerMonitorFrame porque ajuda muito na demo e na depuração.
  *
  * COMO TESTAR
  *   Arrancar no Eclipse com o argumento 8080; ligar 3 clientes; verificar 3 ids

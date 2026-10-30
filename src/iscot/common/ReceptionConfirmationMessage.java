@@ -15,8 +15,9 @@ package iscot.common;
  *   - extends Message.
  *   - Os três campos do enunciado (String, final). O status pode ser um enum
  *     interno OK/NOK ou String; o enunciado mostra String.
- *   - Juntar o eventId a que a confirmação diz respeito (sem ele o servidor não
- *     sabe a que ordem se refere). Perguntar se "message" deve ser esse id.
+ *   - Juntar o messageId da OrderMessage a que a confirmação diz respeito (sem ele o
+ *     servidor não sabe a que ordem se refere). Perguntar se "message" deve ser esse id.
+ *   - getType() -> ACTUATOR (só atuadores confirmam execução).
  *
  * COMO ENCAIXA
  *   Ack: atuador recebe -> envia Ack -> latch desce -> tópico avança.

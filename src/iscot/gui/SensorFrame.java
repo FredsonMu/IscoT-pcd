@@ -9,7 +9,7 @@ package iscot.gui;
  *
  * O QUE VAMOS IMPLEMENTAR
  *   - Título com o id e a área (ex.: "sala-sensor_luz-4").
- *   - JLabel com a grandeza e a unidade (lux, ºC, % de humidade, chuva sim/não).
+ *   - JLabel com a grandeza e a unidade (lux, ºC).
  *   - JSlider com o valor atual (para chuva, um JCheckBox "a chover" chega).
  *   - JButton "Publicar leitura".
  *   - JCheckBox "Automático" (liga/desliga a publicação periódica).

@@ -3,16 +3,18 @@ package iscot.client;
 /**
  * BrokerConnection — esconde o socket e os canais de objetos do resto do cliente.
  *
- * OBJETIVO NO ENUNCIADO
- *   Fases 3 e 4: ligação inicial e troca de mensagens "através de canais de objetos".
- *   O resto do cliente (GUI, lógica) não deve saber o que é um socket.
+ * OBJETIVO NO ENUNCIADO E NA APRESENTAÇÃO
+ *   Fases 3 e 4: ligação inicial e troca de mensagens. Apresentação: os clientes
+ *   "funcionarão em aplicações independentes, e comunicam com o servidor através de
+ *   sockets, usando canais de objetos"; "cada cliente apenas conhece o servidor".
  *
  * O QUE VAMOS IMPLEMENTAR
  *   - Construtor(host, porto): abre o Socket; cria ObjectOutputStream + flush; depois
  *     o ObjectInputStream (mesma ordem que no servidor, senão deadlock).
- *   - register(área, tipo): envia RegisterMessage.pedido, lê a RegisterMessage de resposta; se recusado,
- *     lança exceção com o motivo; se aceite, guarda e devolve o deviceId.
- *   - send(Message), synchronized: writeObject + flush + reset.
+ *   - register(área, tipo): envia RegistrationMessage.request(área, tipo), lê a
+ *     RegistrationMessage de resposta; se recusada, lança exceção com o motivo; se
+ *     aceite, guarda e devolve o deviceId.
+ *   - send(Message), synchronized: preenche o senderId, writeObject + flush + reset.
  *   - receive(): readObject (bloqueia até chegar algo). Só a thread recetora o chama.
  *   - close() e getDeviceId().
  *
@@ -22,8 +24,8 @@ package iscot.client;
  *
  * CONCORRÊNCIA
  *   send é synchronized porque pode ser chamado por duas threads ao mesmo tempo: no
- *   decisor, a thread recetora envia o Ack e a ordem; no sensor, o botão da GUI (thread
- *   do Swing) e a thread automática podem publicar ao mesmo tempo.
+ *   decisor, a thread recetora envia o Ack e a ordem; no sensor, o slider da GUI (thread
+ *   do Swing) e a simulação automática podem enviar ao mesmo tempo.
  *
  * PORQUÊ ESTA CLASSE (encapsulamento)
  *   Se um dia mudássemos de objetos para texto, ou acrescentássemos reconexão

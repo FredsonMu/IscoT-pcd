@@ -1,43 +1,48 @@
 package iscot.client;
 
 /**
- * SensorClient — lógica de um sensor: produz leituras e publica-as.
+ * SensorClient — lógica de um sensor: lê (simula) o ambiente e envia leituras.
  *
- * OBJETIVO NO ENUNCIADO
- *   Secção 1: "Receção das leituras dos sensores: o servidor recebe mensagens que contêm
- *   sinais emitidos pelos sensores em intervalos de tempo arbitrários (entre 1 segundo
- *   e várias horas)."
+ * OBJETIVO NO ENUNCIADO E NA APRESENTAÇÃO
+ *   Apresentação: "sensores: clientes ativos, que leem dados do ambiente"; o sensor de
+ *   luminosidade "reage a alterações na luminosidade" e "envia para tratamento no
+ *   servidor mensagens da classe LightSensorMessage".
+ *   Enunciado: sinais "em intervalos de tempo arbitrários (entre 1 segundo e várias horas)".
  *
  * O QUE VAMOS IMPLEMENTAR
- *   - Recebe: BrokerConnection, deviceId, área, tipo; calcula o tópico de publicação
- *     com tipo.publishTopic(área).
- *   - Abre a SensorFrame e liga-lhe um "ouvinte": quando o utilizador carrega em
- *     "Publicar", cria um Event com o valor atual e envia-o.
- *   - Modo automático (opcional, ativado na GUI): uma thread que, em ciclo, dorme um
- *     intervalo aleatório (Thread.sleep) e publica o valor atual. Desligar o modo =
- *     interrupt() dessa thread.
- *   - Formato do conteúdo: "valor=123" (combinar com o DecisorClient).
+ *   - Recebe: BrokerConnection, deviceId, área, tipo.
+ *   - Abre a SensorFrame (ou o componente de sensor do código base do professor) e
+ *     reage a ALTERAÇÕES do valor: quando o valor muda, cria a mensagem do seu tipo e
+ *     envia-a:
+ *         SENSOR_LUZ          -> new LightSensorMessage(area, lux)
+ *         SENSOR_TEMPERATURA  -> new TemperatureSensorMessage(area, graus)
+ *   - Evitar inundar o servidor: um slider gera dezenas de eventos por segundo; enviar
+ *     só quando o utilizador larga o slider, ou só se a diferença for relevante.
+ *   - Modo automático (opcional): uma thread que, em ciclo, dorme um intervalo aleatório
+ *     (Thread.sleep), muda o valor (simulação) e envia. Desligar = interrupt().
+ *   - O sensor não subscreve nada e não recebe mensagens de tópicos.
  *
  * THREADS
- *   - Publicação manual: corre na thread do Swing (actionPerformed). Enviar pela rede
- *     é rápido em localhost, mas em rigor não devia bloquear a GUI; se der problemas,
+ *   - Envio por alteração na GUI: corre na thread do Swing (listener). Enviar em
+ *     localhost é rápido, mas em rigor não devia bloquear a GUI; se der problemas,
  *     passar o envio para outra thread.
- *   - Publicação automática: thread própria. Uso típico de sleep + interrupt (aula 02).
+ *   - Simulação automática: thread própria. Uso típico de sleep + interrupt (aula 02).
  *
  * LIGAÇÕES
- *   Usa: BrokerConnection, Event, DeviceType, SensorFrame.
+ *   Usa: BrokerConnection, LightSensorMessage, TemperatureSensorMessage, SensorFrame.
  *   Do outro lado: o DecisorClient da mesma área e grandeza recebe estas leituras.
  *
  * ALTERNATIVAS E TRADE-OFFS
- *   - Só manual: mais fácil de demonstrar ("carrego aqui e a luz acende ali").
- *   - Só aleatório: mais realista, mas a demo fica imprevisível.
- *   - Os dois (escolhido): manual para demonstrar, automático para testes de carga.
+ *   - Enviar a intervalos fixos, mesmo sem mudança: mais simples, mas o professor diz
+ *     "reage a alterações", e enche os tópicos de leituras iguais.
+ *   - Só manual / só automático / os dois (escolhido): manual para a demo, automático
+ *     para testes de carga.
  *   - javax.swing.Timer em vez de thread com sleep: corre na thread do Swing; simples,
  *     mas mistura temporização com GUI. A thread mostra melhor a matéria.
  *
  * DÚVIDAS
- *   - Os valores devem ser realistas (lux, ºC, %)? Vamos usar unidades reais na GUI.
- *   - "Várias horas" de intervalo: basta simular com segundos?
+ *   - O código base da GUI do professor (ainda por disponibilizar) já trata as
+ *     alterações de valor? Adaptar quando sair.
  *
  * Fase 4 · Responsável: Fredson · Revisor: Celso
  */

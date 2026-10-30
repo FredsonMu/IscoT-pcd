@@ -25,20 +25,24 @@ Correr as classes de `iscot.test` como programa (botão direito › Run As › J
 
 ### Cenários por fase
 
-**Fase 1–2 (entrega intercalar)**
-- [ ] `9 Formulario de teste`: publicar 3 eventos em `sala/luz/leituras` e 1 em `jardim/humidade/leituras`; aparecem em filas separadas, por ordem.
+**Fase 1–2 (entrega intercalar, 10–13 nov)**
+- [ ] `9 Formulario de teste`: publicar 3 `LightSensorMessage` na Sala (320, 450, 700) e 1 `TemperatureSensorMessage` no Quarto; aparecem em `sala/luz/leituras` e `quarto/temperatura/leituras`, em filas separadas, por ordem.
 - [ ] "Consumir cabeça" remove o mais antigo.
+- [ ] O `toString` das mensagens segue o formato do professor: `LightSensorMessage [light=320.0, area=Sala, getType()=SENSOR]`.
+- [ ] Valor inválido no formulário mostra aviso e não publica nada.
 - [ ] As janelas de sensor, decisor e atuador abrem e reagem aos botões; o histórico do atuador mostra `Lâmpada ligada - HH:MM:SS`.
 
 **Fase 3 · ligação**
 - [ ] Servidor arranca e escreve que está à escuta.
 - [ ] Três clientes recebem três ids diferentes.
+- [ ] Cenário do professor: 1 sensor de luz, 1 decisor de luz e 2 lâmpadas na Sala registam-se; com `1b Servidor com monitor`, aparecem os 4 na GUI do servidor.
 - [ ] `8 Tipo invalido` é recusado com mensagem clara e o servidor continua a funcionar.
 - [ ] Área inválida (`garagem`) também é recusada.
 - [ ] Cliente sem servidor ligado mostra erro claro (não um stack trace).
 
 **Fase 4 · mensagens**
 - [ ] Sensor publica → o decisor da mesma área e grandeza recebe; o de outra área não.
+- [ ] Uma lâmpada que tente enviar uma `AreaLightingOrderMessage` é ignorada pelo servidor (só decisores dão ordens).
 - [ ] Decisor publica ordem → todas as lâmpadas da sala recebem; as do quarto não.
 - [ ] Fechar a janela de um cliente não faz o servidor rebentar.
 
@@ -52,10 +56,10 @@ Correr as classes de `iscot.test` como programa (botão direito › Run As › J
 - [ ] Atuador responde OK a ordens conhecidas e NOK a desconhecidas; o servidor regista o resultado.
 
 **Automações (demo final)**
-- [ ] Luz baixa → lâmpadas acendem.
+- [ ] Luz abaixo de 500 lux → as duas lâmpadas da sala acendem (cenário do professor).
 - [ ] Terra seca → rega liga; humidade sobe → rega desliga.
 - [ ] Começa a chover → janelas fecham.
-- [ ] Temperatura alta → ar condicionado liga.
+- [ ] Temperatura alta → ar condicionado e ventilador ligam.
 
 ## Nível 3 · Carga e robustez
 

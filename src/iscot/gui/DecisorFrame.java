@@ -9,9 +9,9 @@ package iscot.gui;
  *
  * O QUE VAMOS IMPLEMENTAR
  *   - Título com id, área e grandeza.
- *   - Campo(s) para o limiar da regra (ex.: "ligar abaixo de 200 lux").
+ *   - Campo(s) para o limiar da regra (ex.: "acender abaixo de 500 lux, como no exemplo do professor").
  *   - JLabel com a última leitura recebida.
- *   - Lista/área de texto com o registo: "12:01:03 leitura 150 lux -> LIGAR".
+ *   - Lista/área de texto com o registo: "12:01:03 LightSensorMessage 320 lux -> AreaLightingOrderMessage state=true".
  *   - Métodos para o DecisorClient atualizar (chamados dentro de invokeLater).
  *
  * LIGAÇÕES

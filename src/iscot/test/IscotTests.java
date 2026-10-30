@@ -16,11 +16,14 @@ package iscot.test;
  * ------------------------------------------------------------------------------------
  * GRUPO 1 · Estrutura de tópicos (fase 2, sem threads) · escreve: Fredson
  *   1. FIFO: publicar A, B, C num Topic; a cabeça é A; depois de removeHead é B.
- *   2. Ids: os eventos recebem ids 1, 2, 3 por ordem de publicação.
+ *   2. Ids: as mensagens recebem messageId 1, 2, 3 por ordem de publicação.
  *   3. Tópicos separados: publicar em sala/luz/leituras não aparece em jardim/...
  *   4. TopicManager: pedir o mesmo nome duas vezes devolve o MESMO objeto Topic.
- *   5. DeviceType: SENSOR_LUZ.publishTopic(SALA) == "sala/luz/leituras";
+ *   5. DeviceType: readingsTopic(SALA, "luz") == "sala/luz/leituras";
  *      LAMPADA.subscribeTopic(SALA) == "sala/luz/ordens"; sensor não subscreve nada.
+ *   7. Mensagens: LightSensorMessage(SALA, 320).toString() ==
+ *      "LightSensorMessage [light=320.0, area=Sala, getType()=SENSOR]" (formato do
+ *      professor); getType() de uma OrderMessage é DECIDER.
  *   6. Parse: "Sala " é aceite; "garagem" e "TORRADEIRA" são recusados.
  *
  * ------------------------------------------------------------------------------------

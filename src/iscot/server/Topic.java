@@ -19,20 +19,20 @@ package iscot.server;
  *
  * ESTADO INTERNO
  *   - nome do tópico (final)
- *   - fila de Event (LinkedList: addLast / getFirst / removeFirst são O(1))
+ *   - fila de Message (SensorMessage ou OrderMessage; LinkedList: addLast / getFirst / removeFirst são O(1))
  *   - lista de ClientHandler subscritos
- *   - contador para o próximo eventId
+ *   - contador para o próximo messageId
  *   - dados do evento pendente: id do evento à cabeça, o latch desse evento e o
  *     conjunto de deviceIds que já confirmaram (para ignorar acks repetidos)
  *
  * O QUE VAMOS IMPLEMENTAR (TODOS synchronized)
- *   - publish(evento): atribui eventId, põe no fim da fila, notifyAll().
+ *   - publish(mensagem): atribui messageId, põe no fim da fila, notifyAll().
  *   - waitForHead(): enquanto a fila estiver vazia, wait(); devolve a cabeça sem remover.
  *   - removeHead(): tira a cabeça e limpa os dados do evento pendente.
  *   - subscribe(handler) / unsubscribe(handler).
  *   - subscribersSnapshot(): devolve uma CÓPIA da lista de subscritores.
- *   - setPending(eventId, latch): regista o latch do evento à cabeça.
- *   - ack(eventId, deviceId): se for o evento pendente e o device ainda não confirmou,
+ *   - setPending(messageId, latch): regista o latch do evento à cabeça.
+ *   - ack(messageId, deviceId): se for o evento pendente e o device ainda não confirmou,
  *     latch.countdown().
  *   - snapshot(): cópia da fila, para mostrar no formulário de teste.
  *
@@ -40,7 +40,7 @@ package iscot.server;
  *   Criado e guardado por: TopicManager.
  *   Produtores: ClientHandler (publish) e, na fase 2, TopicTestFrame.
  *   Consumidor: TopicDispatcher (waitForHead, removeHead, setPending).
- *   Acks: ClientHandler (ack). Usa: Event, ModifiedCountdownLatch.
+ *   Acks: ClientHandler (ack). Usa: Message, ModifiedCountdownLatch.
  *
  * CONCORRÊNCIA: PORQUÊ CADA DECISÃO
  *   - synchronized em tudo: vários ClientHandler publicam ao mesmo tempo; "fila.add"
@@ -75,7 +75,7 @@ package iscot.server;
  *   snapshot e removeHead através do TopicTestFrame.
  *
  * COMO TESTAR
- *   Fase 2: publicar 3 eventos, verificar ordem FIFO e ids 1, 2, 3.
+ *   Fase 2: publicar 3 LightSensorMessage, verificar ordem FIFO e ids 1, 2, 3.
  *   Fase 5: várias threads a publicar 1000 eventos cada; no fim tem de haver
  *   exatamente N*1000 eventos e ids sem repetição (sem synchronized vê-se a falhar).
  *

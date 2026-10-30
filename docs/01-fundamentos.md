@@ -205,13 +205,13 @@ Um "portão" com contador N: cada `countdown()` desconta 1, quem chama `await()`
 | Message broker | intermediário que recebe mensagens de produtores e entrega a consumidores, sem que se conheçam | o servidor |
 | Publish / subscribe | quem publica não sabe quem recebe; quem subscreve recebe tudo do tópico | sensores e decisores publicam; decisores e atuadores subscrevem |
 | Tópico | canal com nome que agrupa mensagens de um tema | `sala/luz/leituras` |
-| Evento | uma mensagem num tópico | `Event` |
+| Evento | uma mensagem num tópico | `SensorMessage` / `OrderMessage` (ex.: `LightSensorMessage`) |
 | Ack (acknowledgement) | confirmação de receção | `AckMessage` |
 | QoS (MQTT) | nível de garantia: 0 sem confirmação, 1 pelo menos uma vez (com ack), 2 exatamente uma vez | o nosso modelo parece QoS 1 |
 | Retained message (MQTT) | o broker guarda a última mensagem e dá-a a quem subscrever depois | não temos; dúvida para o professor |
 | Head-of-line blocking | o primeiro da fila atrasa todos os que vêm atrás | um atuador lento prende o tópico até ao timeout |
 | Timeout | tempo máximo de espera | `await(waitPeriod)` do latch |
-| Histerese | dois limiares diferentes para ligar e desligar, para não oscilar | regra do decisor (liga < 200, desliga > 300) |
+| Histerese | dois limiares diferentes para ligar e desligar, para não oscilar | regra do decisor de luz (acende abaixo de 500 lux, apaga acima de 600) |
 
 ---
 

@@ -1,19 +1,23 @@
 package iscot.gui;
 
 /**
- * ActuatorFrame — janela que simula um dispositivo (lâmpada, AC, rega, janela) e o seu
- * histórico.
+ * ActuatorFrame — janela que simula um dispositivo (lâmpada, ventilador, ar condicionado)
+ * e o seu histórico.
  *
- * OBJETIVO NO ENUNCIADO
+ * OBJETIVO NO ENUNCIADO E NA APRESENTAÇÃO
  *   Fase 1: componentes que simulam "os atuadores (luzes, ar condicionado, rega, etc)".
- *   Secção 1.3: histórico "verificável pelo utilizador".
+ *   Apresentação: figura "Luz e ventilador"; "há código base apenas para a GUI, ainda por
+ *   disponibilizar". Enunciado 1.3: histórico "verificável pelo utilizador".
  *
- * O QUE VAMOS IMPLEMENTAR
+ * O QUE VAMOS IMPLEMENTAR (versão mínima até chegar o código base do professor)
  *   - Título com id e área.
  *   - Indicador de estado bem visível: JLabel grande com fundo de cor
- *     (amarelo = lâmpada ligada, cinzento = desligada; azul = rega ligada, ...).
+ *     (amarelo = lâmpada ligada, cinzento = desligada; azul = ventilador ligado, ...).
  *   - JList com DefaultListModel para o histórico ("Lâmpada ligada - 21:43:05").
- *   - Métodos para o ActuatorClient mudar o estado e acrescentar linhas.
+ *   - Métodos públicos para o ActuatorClient: open(), setOn(boolean),
+ *     addHistory(String linha). O cliente não toca nos componentes.
+ *   - Quando sair o código base do professor: trocar o indicador pelo componente dele e
+ *     manter os mesmos métodos públicos (o ActuatorClient não muda).
  *
  * THREADS (a armadilha principal desta classe)
  *   As ordens chegam na thread recetora, não na thread do Swing. O Swing NÃO é
@@ -24,7 +28,8 @@ package iscot.gui;
  *   trabalho. Perguntar ao professor se podemos usar (não é coordenação, é Swing).
  *
  * LIGAÇÕES
- *   Criada e controlada por: ActuatorClient. Mostra o histórico mantido pelo ActuatorClient.
+ *   Criada e controlada por: ActuatorClient. Mostra o histórico mantido pelo
+ *   ActuatorClient.
  *
  * Fase 1 · Responsável: Fredson · Revisor: Celso
  */
