@@ -1,0 +1,166 @@
+# 02 · Arquitetura do IscoT
+
+## Visão geral
+
+Exemplo concreto: a luz da sala. O sensor publica leituras em `sala/luz/leituras`; o decisor de luz subscreve esse tópico e publica ordens em `sala/luz/ordens`; as lâmpadas da sala subscrevem as ordens.
+
+```mermaid
+flowchart LR
+  S["Sensor luz (sala)"] -- "Event valor=120" --> T1
+  subgraph Servidor IscoT
+    T1[["Tópico sala/luz/leituras"]]
+    T2[["Tópico sala/luz/ordens"]]
+  end
+  T1 -- entrega a cabeça --> D["Decisor luz (sala)"]
+  D -- "Event LIGAR" --> T2
+  T2 -- entrega a cabeça --> L1["Lâmpada 1"]
+  T2 -- entrega a cabeça --> L2["Lâmpada 2"]
+  L1 -. Ack .-> T2
+  L2 -. Ack .-> T2
+  D -. Ack .-> T1
+```
+
+## Pacotes e responsabilidades
+
+| Pacote | Para quê | Classes |
+|---|---|---|
+| `iscot.common` | tudo o que servidor e clientes partilham: tipos e mensagens | `Area`, `Role`, `DeviceType`, `Topics`, `Message` e filhas |
+| `iscot.sync` | mecanismos de coordenação escritos por nós (exigência do enunciado) | `ModifiedCountdownLatch` |
+| `iscot.server` | o broker | `Server`, `ClientHandler`, `TopicManager`, `Topic`, `TopicDispatcher` |
+| `iscot.client` | lógica dos clientes, sem Swing | `ClientMain`, `BrokerConnection`, `SensorClient`, `DecisorClient`, `ActuatorClient`, `ActionHistory` |
+| `iscot.gui` | janelas, sem rede | `TopicTestFrame`, `SensorFrame`, `DecisorFrame`, `ActuatorFrame` |
+| `iscot.test` | testes que se correm como programas | `TopicStructureTest`, `LatchTest`, `ConcurrencyStressTest` |
+
+**Regra de dependências** (quem pode usar quem):
+
+```mermaid
+flowchart TD
+  gui --> client
+  client --> common
+  gui --> common
+  server --> common
+  server --> sync
+  test --> server
+  test --> sync
+  test --> common
+```
+
+- `common` não depende de ninguém: é o "contrato" entre servidor e clientes.
+- `server` **nunca** usa `client` nem `gui`, e vice-versa. Só se falam por mensagens.
+- Exceção consciente: o `TopicTestFrame` (fase 2) usa `server.Topic` diretamente, porque nessa fase ainda não há rede.
+
+## Classe a classe: quem liga a quem
+
+| Classe | Objetivo do enunciado que cumpre | Usa | É usada por |
+|---|---|---|---|
+| `Server` | servidor central, ligação inicial, id único | `TopicManager`, `ClientHandler` | `ClientHandler` |
+| `ClientHandler` | "thread dedicada por cliente", registo, recusa de tipo | `Server`, `Topic`, `Topics`, mensagens | `Server` (cria), `TopicDispatcher` (send) |
+| `TopicManager` | gerir os tópicos e as suas filas | `Topic`, `TopicDispatcher` | `ClientHandler` |
+| `Topic` | fila por tópico, ciclo de vida do evento | `Event`, `ModifiedCountdownLatch` | `ClientHandler`, `TopicDispatcher`, `TopicTestFrame` |
+| `TopicDispatcher` | "avança para o próximo evento quando o da cabeça é consumido" | `Topic`, latch, `ClientHandler` | `TopicManager` (cria) |
+| `ModifiedCountdownLatch` | registar o consumo por cada cliente | — | `TopicDispatcher`, `Topic` |
+| `ClientMain` | argumentos do main, ligação automática | `BrokerConnection`, clientes | — (ponto de entrada) |
+| `BrokerConnection` | canais de objetos do lado do cliente | mensagens | os 3 clientes |
+| `SensorClient` | leituras em intervalos arbitrários | `BrokerConnection`, `SensorFrame` | `ClientMain` |
+| `DecisorClient` | ordens de alto nível a partir das leituras | `BrokerConnection`, `DecisorFrame` | `ClientMain` |
+| `ActuatorClient` | mudar o estado do dispositivo | `BrokerConnection`, `ActionHistory`, `ActuatorFrame` | `ClientMain` |
+| `ActionHistory` | histórico "Lâmpada desligada - HH:MM:SS" | — | `ActuatorClient`, `ActuatorFrame` |
+| `*Frame` | demonstrar as automações via GUI | — | os clientes |
+
+## Ciclo de vida de um evento
+
+```mermaid
+sequenceDiagram
+  participant D as DecisorClient
+  participant H as ClientHandler (do decisor)
+  participant T as Topic sala/luz/ordens
+  participant X as TopicDispatcher
+  participant L as Lâmpadas (2)
+  D->>H: Event "LIGAR"
+  H->>T: publish() + notifyAll()
+  X->>T: waitForHead() acorda e espreita a cabeça
+  X->>X: latch = new ModifiedCountdownLatch(2)
+  X->>T: setPending(id, latch)
+  X->>L: send(evento) a cada lâmpada
+  L-->>T: AckMessage → ClientHandler → ack() → countdown()
+  X->>X: latch.await(timeout) volta quando count = 0
+  X->>T: removeHead() e passa ao seguinte
+```
+
+## Registo de um cliente
+
+```mermaid
+sequenceDiagram
+  participant C as ClientMain
+  participant B as BrokerConnection
+  participant S as Server
+  participant H as ClientHandler
+  C->>B: new BrokerConnection(ip, porto)
+  B->>S: liga (Socket)
+  S->>H: accept() → new ClientHandler(socket).start()
+  B->>H: RegisterRequest("sala", "LAMPADA")
+  H->>H: Area.parse / DeviceType.parse
+  alt tipo existe
+    H->>S: newDeviceId()
+    H->>H: subscreve sala/luz/ordens
+    H->>B: RegisterReply(aceite, "sala-lampada-1")
+  else tipo não existe
+    H->>B: RegisterReply(recusado, motivo)
+    H->>H: fecha o socket
+  end
+```
+
+## Mapa de threads
+
+Pergunta típica da oral: "quantas threads tem o vosso sistema e onde é que cada uma bloqueia?"
+
+| Thread | Onde | Quantas | Faz | Bloqueia em |
+|---|---|---|---|---|
+| main do servidor | `Server` | 1 | aceita ligações | `accept()` |
+| `ClientHandler` | servidor | 1 por cliente | registo; lê `Event` e `AckMessage` | `readObject()` |
+| `TopicDispatcher` | servidor | 1 por tópico | entrega a cabeça, espera os acks, avança | `waitForHead()`, `latch.await()` |
+| main do cliente | `ClientMain` | 1 por cliente | liga, regista, abre a janela | — |
+| recetora | decisor, atuador | 1 | lê eventos, reage, envia ack | `readObject()` |
+| sensor automático | sensor | 0 ou 1 | publica a intervalos | `sleep()` |
+| EDT (Swing) | cada cliente com janela | 1 | desenha e corre os listeners | fila de eventos do Swing |
+
+## Recursos partilhados e como são protegidos
+
+| Recurso | Quem lhe toca | Proteção |
+|---|---|---|
+| fila e subscritores de um `Topic` | vários `ClientHandler` + 1 `TopicDispatcher` | `synchronized` + `wait/notifyAll` no `Topic` |
+| mapa do `TopicManager` | vários `ClientHandler` no registo | `synchronized getOrCreate` |
+| contador de ids (`Server`) | vários `ClientHandler` | `synchronized newDeviceId` |
+| `ModifiedCountdownLatch` | 1 dispatcher (espera) + N handlers (descontam) | `synchronized` + `wait(ms)/notifyAll` |
+| stream de saída de um cliente (servidor) | o seu `ClientHandler` + dispatchers | `synchronized send` |
+| stream de saída (cliente) | thread recetora + EDT + sensor automático | `synchronized send` |
+| componentes Swing | EDT + recetora | só a EDT lhes toca (`invokeLater`) |
+| `ActionHistory` | recetora (+ EDT) | `synchronized` ou confinado à EDT |
+
+**Ordem dos cadeados** (para não haver deadlock): quando é preciso segurar dois, a ordem é sempre `Topic` → `ModifiedCountdownLatch`. Ninguém segura o latch e depois pede o `Topic`. E nunca se escreve para a rede nem se espera um latch com o cadeado de um `Topic` seguro (por isso existe o `subscribersSnapshot`).
+
+## Armadilhas conhecidas
+
+| Sintoma | Causa | Solução |
+|---|---|---|
+| Cliente e servidor parados ao ligar, sem erro | os dois criaram primeiro o `ObjectInputStream` | Output + `flush()` primeiro, nos dois lados |
+| O outro lado recebe uma versão antiga de um objeto | cache do `ObjectOutputStream` | `reset()` depois de cada envio |
+| `NotSerializableException` | campo não serializável numa mensagem | só dados simples nas mensagens |
+| `InvalidClassException` | `serialVersionUID` diferente ou classe alterada só de um lado | recompilar tudo; mensagens só em `common` |
+| `IllegalMonitorStateException` | `wait/notify` fora de `synchronized` | dentro de método ou bloco sincronizado |
+| `BindException` | servidor anterior ainda a correr | parar todas as consolas no Eclipse |
+| Servidor atende um cliente de cada vez | `run()` em vez de `start()` | `start()` |
+| Janela congela | operação bloqueante num `actionPerformed` | thread própria |
+| GUI com comportamentos estranhos de vez em quando | componentes alterados fora da EDT | `SwingUtilities.invokeLater` |
+| Tópico preso | subscritor caído sem timeout | `await` com tempo + `unsubscribe` no `finally` |
+
+## Fases do enunciado e onde ficam
+
+| Fase | Enunciado | Classes |
+|---|---|---|
+| 1 | GUI | `gui/*`, `ActionHistory` |
+| 2 | estrutura de tópicos | `Area`, `Role`, `DeviceType`, `Topics`, `Event`, `Topic`, `TopicManager`, `TopicTestFrame`, `TopicStructureTest` |
+| 3 | servidor e ligação inicial | `Server`, `ClientHandler` (registo), `ClientMain`, `BrokerConnection`, `RegisterRequest/Reply` |
+| 4 | troca de mensagens | `Message`, `AckMessage`, ciclo do `ClientHandler`, os 3 clientes |
+| 5 | CountDownLatch | `ModifiedCountdownLatch`, `TopicDispatcher`, `LatchTest`, `ConcurrencyStressTest` |
+| 6 (extra) | confirmações de execução | `ReceptionConfirmationMessage` |

@@ -1,0 +1,23 @@
+# Compilados
+bin/
+*.class
+
+# Eclipse (o workspace de cada um nao vai para o repositorio)
+.metadata/
+.recommenders/
+*.tmp
+*.bak
+local.properties
+
+# IntelliJ / VS Code, se alguem usar
+.idea/
+*.iml
+.vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs de testes
+*.log
