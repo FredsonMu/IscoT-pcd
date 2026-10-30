@@ -24,7 +24,7 @@ package iscot.gui;
  *   trabalho. Perguntar ao professor se podemos usar (não é coordenação, é Swing).
  *
  * LIGAÇÕES
- *   Criada e controlada por: ActuatorClient. Mostra o conteúdo de: ActionHistory.
+ *   Criada e controlada por: ActuatorClient. Mostra o histórico mantido pelo ActuatorClient.
  *
  * Fase 1 · Responsável: Fredson · Revisor: Celso
  */

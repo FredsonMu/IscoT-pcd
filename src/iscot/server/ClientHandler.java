@@ -15,10 +15,10 @@ package iscot.server;
  *   - run():
  *       1. criar o ObjectOutputStream, fazer flush, SÓ DEPOIS o ObjectInputStream
  *          (ver armadilha abaixo);
- *       2. registo: ler RegisterRequest; tentar converter área e tipo (Area.parse,
- *          DeviceType.parse); se falhar, enviar RegisterReply recusado e terminar;
- *          se der, pedir id ao Server, obter os tópicos via Topics + TopicManager,
- *          subscrever se for decisor/atuador, enviar RegisterReply aceite;
+ *       2. registo: ler a RegisterMessage (pedido); tentar converter área e tipo (Area.parse,
+ *          DeviceType.parse); se falhar, responder com RegisterMessage recusada e terminar;
+ *          se der, pedir id ao Server, obter os tópicos via DeviceType + TopicManager,
+ *          subscrever se for decisor/atuador, responder com RegisterMessage aceite;
  *       3. ciclo: ler objeto; se for Event -> tópico de publicação.publish;
  *          se for AckMessage -> tópico subscrito.ack(eventId, deviceId);
  *          (extra) se for ReceptionConfirmationMessage -> registar confirmação;
@@ -27,7 +27,7 @@ package iscot.server;
  *
  * LIGAÇÕES
  *   Criado por: Server (um por accept). Usa: Server (ids, TopicManager), Topic,
- *   Topics, Area, DeviceType, todas as mensagens.
+ *   Area, DeviceType, todas as mensagens.
  *   O seu send é chamado por: TopicDispatcher (outra thread!) e por ele próprio.
  *
  * CONCORRÊNCIA

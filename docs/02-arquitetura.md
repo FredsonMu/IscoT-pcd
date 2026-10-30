@@ -24,12 +24,12 @@ flowchart LR
 
 | Pacote | Para quê | Classes |
 |---|---|---|
-| `iscot.common` | tudo o que servidor e clientes partilham: tipos e mensagens | `Area`, `Role`, `DeviceType`, `Topics`, `Message` e filhas |
+| `iscot.common` | tudo o que servidor e clientes partilham: tipos e mensagens | `Area`, `DeviceType` (com `Role` e nomes dos tópicos), `Message` e filhas |
 | `iscot.sync` | mecanismos de coordenação escritos por nós (exigência do enunciado) | `ModifiedCountdownLatch` |
 | `iscot.server` | o broker | `Server`, `ClientHandler`, `TopicManager`, `Topic`, `TopicDispatcher` |
-| `iscot.client` | lógica dos clientes, sem Swing | `ClientMain`, `BrokerConnection`, `SensorClient`, `DecisorClient`, `ActuatorClient`, `ActionHistory` |
+| `iscot.client` | lógica dos clientes, sem Swing | `ClientMain`, `BrokerConnection`, `SensorClient`, `DecisorClient`, `ActuatorClient` (com o histórico) |
 | `iscot.gui` | janelas, sem rede | `TopicTestFrame`, `SensorFrame`, `DecisorFrame`, `ActuatorFrame` |
-| `iscot.test` | testes que se correm como programas | `TopicStructureTest`, `LatchTest`, `ConcurrencyStressTest` |
+| `iscot.test` | testes que se correm como programas | `IscotTests` |
 
 **Regra de dependências** (quem pode usar quem):
 
@@ -54,7 +54,7 @@ flowchart TD
 | Classe | Objetivo do enunciado que cumpre | Usa | É usada por |
 |---|---|---|---|
 | `Server` | servidor central, ligação inicial, id único | `TopicManager`, `ClientHandler` | `ClientHandler` |
-| `ClientHandler` | "thread dedicada por cliente", registo, recusa de tipo | `Server`, `Topic`, `Topics`, mensagens | `Server` (cria), `TopicDispatcher` (send) |
+| `ClientHandler` | "thread dedicada por cliente", registo, recusa de tipo | `Server`, `Topic`, `DeviceType`, mensagens | `Server` (cria), `TopicDispatcher` (send) |
 | `TopicManager` | gerir os tópicos e as suas filas | `Topic`, `TopicDispatcher` | `ClientHandler` |
 | `Topic` | fila por tópico, ciclo de vida do evento | `Event`, `ModifiedCountdownLatch` | `ClientHandler`, `TopicDispatcher`, `TopicTestFrame` |
 | `TopicDispatcher` | "avança para o próximo evento quando o da cabeça é consumido" | `Topic`, latch, `ClientHandler` | `TopicManager` (cria) |
@@ -63,8 +63,7 @@ flowchart TD
 | `BrokerConnection` | canais de objetos do lado do cliente | mensagens | os 3 clientes |
 | `SensorClient` | leituras em intervalos arbitrários | `BrokerConnection`, `SensorFrame` | `ClientMain` |
 | `DecisorClient` | ordens de alto nível a partir das leituras | `BrokerConnection`, `DecisorFrame` | `ClientMain` |
-| `ActuatorClient` | mudar o estado do dispositivo | `BrokerConnection`, `ActionHistory`, `ActuatorFrame` | `ClientMain` |
-| `ActionHistory` | histórico "Lâmpada desligada - HH:MM:SS" | — | `ActuatorClient`, `ActuatorFrame` |
+| `ActuatorClient` | mudar o estado do dispositivo e manter o histórico "Lâmpada desligada - HH:MM:SS" | `BrokerConnection`, `ActuatorFrame` | `ClientMain` |
 | `*Frame` | demonstrar as automações via GUI | — | os clientes |
 
 ## Ciclo de vida de um evento
@@ -98,14 +97,14 @@ sequenceDiagram
   C->>B: new BrokerConnection(ip, porto)
   B->>S: liga (Socket)
   S->>H: accept() → new ClientHandler(socket).start()
-  B->>H: RegisterRequest("sala", "LAMPADA")
+  B->>H: RegisterMessage.pedido("sala", "LAMPADA")
   H->>H: Area.parse / DeviceType.parse
   alt tipo existe
     H->>S: newDeviceId()
     H->>H: subscreve sala/luz/ordens
-    H->>B: RegisterReply(aceite, "sala-lampada-1")
+    H->>B: RegisterMessage.resposta(aceite, "sala-lampada-1")
   else tipo não existe
-    H->>B: RegisterReply(recusado, motivo)
+    H->>B: RegisterMessage.resposta(recusado, motivo)
     H->>H: fecha o socket
   end
 ```
@@ -135,7 +134,7 @@ Pergunta típica da oral: "quantas threads tem o vosso sistema e onde é que cad
 | stream de saída de um cliente (servidor) | o seu `ClientHandler` + dispatchers | `synchronized send` |
 | stream de saída (cliente) | thread recetora + EDT + sensor automático | `synchronized send` |
 | componentes Swing | EDT + recetora | só a EDT lhes toca (`invokeLater`) |
-| `ActionHistory` | recetora (+ EDT) | `synchronized` ou confinado à EDT |
+| histórico do `ActuatorClient` | recetora (+ EDT) | `synchronized` ou confinado à EDT |
 
 **Ordem dos cadeados** (para não haver deadlock): quando é preciso segurar dois, a ordem é sempre `Topic` → `ModifiedCountdownLatch`. Ninguém segura o latch e depois pede o `Topic`. E nunca se escreve para a rede nem se espera um latch com o cadeado de um `Topic` seguro (por isso existe o `subscribersSnapshot`).
 
@@ -158,9 +157,9 @@ Pergunta típica da oral: "quantas threads tem o vosso sistema e onde é que cad
 
 | Fase | Enunciado | Classes |
 |---|---|---|
-| 1 | GUI | `gui/*`, `ActionHistory` |
-| 2 | estrutura de tópicos | `Area`, `Role`, `DeviceType`, `Topics`, `Event`, `Topic`, `TopicManager`, `TopicTestFrame`, `TopicStructureTest` |
-| 3 | servidor e ligação inicial | `Server`, `ClientHandler` (registo), `ClientMain`, `BrokerConnection`, `RegisterRequest/Reply` |
+| 1 | GUI | `gui/*`, histórico do `ActuatorClient` |
+| 2 | estrutura de tópicos | `Area`, `DeviceType`, `Event`, `Topic`, `TopicManager`, `TopicTestFrame`, `IscotTests` (grupo 1) |
+| 3 | servidor e ligação inicial | `Server`, `ClientHandler` (registo), `ClientMain`, `BrokerConnection`, `RegisterMessage` |
 | 4 | troca de mensagens | `Message`, `AckMessage`, ciclo do `ClientHandler`, os 3 clientes |
-| 5 | CountDownLatch | `ModifiedCountdownLatch`, `TopicDispatcher`, `LatchTest`, `ConcurrencyStressTest` |
+| 5 | CountDownLatch | `ModifiedCountdownLatch`, `TopicDispatcher`, `IscotTests` (grupos 2 e 3) |
 | 6 (extra) | confirmações de execução | `ReceptionConfirmationMessage` |

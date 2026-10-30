@@ -27,7 +27,7 @@ package iscot.client;
  *   repete o código de ligação e registo.
  *
  * LIGAÇÕES
- *   Usa: BrokerConnection, Area, DeviceType, Role, SensorClient, DecisorClient,
+ *   Usa: BrokerConnection, Area, DeviceType (e o seu Role), SensorClient, DecisorClient,
  *   ActuatorClient.
  *
  * NO ECLIPSE

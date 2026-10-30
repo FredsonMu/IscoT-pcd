@@ -10,7 +10,7 @@ package iscot.client;
  *
  * O QUE VAMOS IMPLEMENTAR
  *   - Recebe: BrokerConnection, deviceId, área, tipo; calcula o tópico de publicação
- *     com Topics.publishTopic.
+ *     com tipo.publishTopic(área).
  *   - Abre a SensorFrame e liga-lhe um "ouvinte": quando o utilizador carrega em
  *     "Publicar", cria um Event com o valor atual e envia-o.
  *   - Modo automático (opcional, ativado na GUI): uma thread que, em ciclo, dorme um
@@ -25,7 +25,7 @@ package iscot.client;
  *   - Publicação automática: thread própria. Uso típico de sleep + interrupt (aula 02).
  *
  * LIGAÇÕES
- *   Usa: BrokerConnection, Event, Topics, SensorFrame.
+ *   Usa: BrokerConnection, Event, DeviceType, SensorFrame.
  *   Do outro lado: o DecisorClient da mesma área e grandeza recebe estas leituras.
  *
  * ALTERNATIVAS E TRADE-OFFS

@@ -8,11 +8,11 @@ Cada um **escreve** uma parte, mas os dois **explicam** tudo. Na discussão fina
 
 | | Fredson | Celso |
 |---|---|---|
-| Fase 1 | `gui/*`, `ActionHistory` | — |
-| Fase 2 | `TopicTestFrame`, `TopicStructureTest` | `common/*` (enums, `Topics`, `Event`), `Topic`, `TopicManager` |
-| Fase 3 | `ClientMain`, `BrokerConnection` | `Server`, `ClientHandler` (registo), `RegisterRequest/Reply` |
+| Fase 1 | `gui/*`, histórico do atuador | — |
+| Fase 2 | `TopicTestFrame`, `IscotTests` (grupo 1) | `common/*` (`Area`, `DeviceType`, `Event`), `Topic`, `TopicManager` |
+| Fase 3 | `ClientMain`, `BrokerConnection` | `Server`, `ClientHandler` (registo), `RegisterMessage` |
 | Fase 4 | `SensorClient`, `DecisorClient`, `ActuatorClient`, `invokeLater` | `Message`, `AckMessage`, ciclo do `ClientHandler` |
-| Fase 5 | `LatchTest` | `TopicDispatcher`, `ConcurrencyStressTest` |
+| Fase 5 | `IscotTests` (grupo 2) | `TopicDispatcher`, `IscotTests` (grupo 3) |
 | Fase 5 | **`ModifiedCountdownLatch`: os dois escrevem em separado e comparam** | |
 | Fase 6 | dividir por automação (luz/janelas vs rega/clima) | |
 | Sempre | revê o código do Celso | revê o código do Fredson |
@@ -26,8 +26,8 @@ Porquê esta divisão: cada um trabalha num pacote diferente (menos conflitos no
 | Data | Checkpoint | Pronto quando |
 |---|---|---|
 | sáb 31 out | **CP0 · arranque** (30 min) | os dois leram `docs/01` a `03`; os dois clonaram o repositório e o projeto abre sem erros no Eclipse |
-| seg 2 nov | **CP1 · peças separadas** | Fredson: as 3 janelas desenhadas e o histórico a acrescentar linhas com hora. Celso: enums, `Topics`, `Event`, `Topic` com publish/waitForHead/removeHead. Troca de explicações. |
-| qua 4 nov | **CP2 · integração fases 1–2** | `TopicTestFrame` usa o `Topic` real; `TopicStructureTest` passa; README atualizado. Bónus: servidor aceita ligações e regista clientes. |
+| seg 2 nov | **CP1 · peças separadas** | Fredson: as 3 janelas desenhadas e o histórico a acrescentar linhas com hora. Celso: `Area`, `DeviceType`, `Event`, `Topic` com publish/waitForHead/removeHead. Troca de explicações. |
+| qua 4 nov | **CP2 · integração fases 1–2** | `TopicTestFrame` usa o `Topic` real; o grupo 1 do `IscotTests` passa; README atualizado. Bónus: servidor aceita ligações e regista clientes. |
 | qui 5 nov | **CP3 · ensaio** | apresentação cronometrada (5–10 min), **cada um apresenta a parte do outro**; perguntas cruzadas com `01-fundamentos.md`; lista de dúvidas fechada |
 | sex 6 nov | **Apresentação** | demo + arquitetura planeada + perguntas ao professor; tag `checkpoint-1` |
 

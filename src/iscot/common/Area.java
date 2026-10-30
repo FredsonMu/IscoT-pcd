@@ -15,7 +15,7 @@ package iscot.common;
  *     e é essa exceção que o servidor apanha para recusar a ligação.
  *
  * LIGAÇÕES
- *   É usada por: ClientHandler (valida o registo), Topics (monta o nome do tópico),
+ *   É usada por: ClientHandler (valida o registo), DeviceType (monta o nome do tópico),
  *   Server (gera o id do dispositivo), ClientMain (lê args[2]).
  *
  * CONCORRÊNCIA

@@ -30,7 +30,7 @@ package iscot.gui;
  *      dispatcher, quando o latch chegar a zero.
  *
  * LIGAÇÕES
- *   Usa: Topic, Event (e opcionalmente Topics para sugerir nomes).
+ *   Usa: Topic, Event (e opcionalmente DeviceType para sugerir nomes).
  *   Não usa rede nem threads nossas: só a thread do Swing.
  *
  * ALTERNATIVAS

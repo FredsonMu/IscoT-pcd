@@ -8,9 +8,9 @@ Correr as classes de `iscot.test` como programa (botão direito › Run As › J
 
 | Teste | Fase | Verifica |
 |---|---|---|
-| `TopicStructureTest` | 2 | FIFO, ids sequenciais, tópicos separados, `getOrCreate` devolve o mesmo objeto, nomes de tópicos, parse de áreas e tipos |
-| `LatchTest` | 5 | timeout, libertação, latch a zero, acks a mais, interrupção |
-| `ConcurrencyStressTest` | 5 | 10 threads × 1000 publicações: nada se perde, nenhum id repete |
+| grupo 1 · estrutura | 2 | FIFO, ids sequenciais, tópicos separados, `getOrCreate` devolve o mesmo objeto, nomes de tópicos, parse de áreas e tipos |
+| grupo 2 · latch | 5 | timeout, libertação, latch a zero, acks a mais, interrupção |
+| grupo 3 · carga | 5 | 10 threads × 1000 publicações: nada se perde, nenhum id repete |
 
 **Regra**: quem escreve o teste não é quem escreveu a classe. Assim testamos o que a classe deve fazer, não o que achamos que fizemos.
 
@@ -59,7 +59,7 @@ Correr as classes de `iscot.test` como programa (botão direito › Run As › J
 
 ## Nível 3 · Carga e robustez
 
-- `ConcurrencyStressTest`, corrido várias vezes seguidas.
+- O grupo 3 do `IscotTests`, corrido várias vezes seguidas.
 - **Experiência didática**: tirar temporariamente o `synchronized` do `Topic.publish`, correr o teste de carga e ver os números a falhar. Voltar a pôr. É a race condition da aula 03 ao vivo; vale a pena mostrar na oral.
 - Vários sensores em modo automático com intervalo curto (100 ms) durante 1 minuto: o servidor não pode encravar.
 

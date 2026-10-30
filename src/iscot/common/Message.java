@@ -17,8 +17,7 @@ package iscot.common;
  *
  * HIERARQUIA (todas no pacote common)
  *   Message
- *    ├── RegisterRequest                 cliente -> servidor, 1.ª mensagem
- *    ├── RegisterReply                   servidor -> cliente, aceita ou recusa
+ *    ├── RegisterMessage                 registo: pedido do cliente e resposta do servidor
  *    ├── Event                           leitura ou ordem, num tópico
  *    ├── AckMessage                      "consumi o evento X" (faz o latch descer)
  *    └── ReceptionConfirmationMessage    extra: "executei a ordem, OK/NOK"

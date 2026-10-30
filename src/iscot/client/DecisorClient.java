@@ -39,7 +39,7 @@ package iscot.client;
  *   tanto faz; escolhemos Ack primeiro e explicamos porquê.
  *
  * LIGAÇÕES
- *   Usa: BrokerConnection, Event, AckMessage, Topics, DecisorFrame.
+ *   Usa: BrokerConnection, Event, AckMessage, DeviceType (tópicos), DecisorFrame.
  *   Recebe de: SensorClient (via servidor). Envia para: ActuatorClient (via servidor).
  *
  * DÚVIDAS

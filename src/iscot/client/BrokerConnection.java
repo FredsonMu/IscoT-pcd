@@ -10,7 +10,7 @@ package iscot.client;
  * O QUE VAMOS IMPLEMENTAR
  *   - Construtor(host, porto): abre o Socket; cria ObjectOutputStream + flush; depois
  *     o ObjectInputStream (mesma ordem que no servidor, senão deadlock).
- *   - register(área, tipo): envia RegisterRequest, lê RegisterReply; se recusado,
+ *   - register(área, tipo): envia RegisterMessage.pedido, lê a RegisterMessage de resposta; se recusado,
  *     lança exceção com o motivo; se aceite, guarda e devolve o deviceId.
  *   - send(Message), synchronized: writeObject + flush + reset.
  *   - receive(): readObject (bloqueia até chegar algo). Só a thread recetora o chama.

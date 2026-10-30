@@ -109,3 +109,19 @@ As janelas (`gui`) não sabem nada de rede; os clientes (`client`) não criam co
 
 ### D18 · Atualizar a GUI a partir de outras threads
 Alterar componentes diretamente da thread recetora parece funcionar, mas é uma race condition. `SwingUtilities.invokeLater` entrega a alteração à EDT. **Escolha:** `invokeLater` em todas as atualizações que não venham de um listener.
+
+### D19 · Quantas classes
+A primeira versão tinha 29 classes, uma por responsabilidade. Passámos para 23, juntando o que é sempre usado em conjunto:
+- `Role` e a regra dos nomes de tópicos foram para dentro do `DeviceType`;
+- o histórico foi para dentro do `ActuatorClient`;
+- pedido e resposta de registo ficaram numa só `RegisterMessage`;
+- os três testes ficaram num só `IscotTests`, com três grupos.
+
+| | mais classes | menos classes |
+|---|---|---|
+| Ganha | uma responsabilidade por classe; mais fácil dividir sem conflitos no Git; peças testáveis sozinhas | menos ficheiros para navegar e menos ligações para explicar |
+| Perde | mais "cola" entre classes; parece maior do que é | classes maiores e com mais de um assunto |
+
+O que não juntámos, e porquê:
+- **as 6 classes do servidor e o latch**: são onde está a matéria de concorrência, e cada uma tem um papel diferente no produtor-consumidor;
+- **as janelas e a lógica dos clientes**: a fase 1 pede GUI antes de haver rede, e os componentes gráficos podem vir a ser dados pelo professor.
