@@ -75,6 +75,7 @@ IscoT-pcd/
 | [05-testes](docs/05-testes.md) | o que testar em cada fase e como investigar quando encrava |
 | [06-plano](docs/06-plano.md) | divisão do trabalho, checkpoints e guião da apresentação |
 | [07-duvidas](docs/07-duvidas.md) | perguntas ao professor, perguntas que temos de saber responder, temas a investigar |
+| [08-apresentacao-checkpoint1](docs/08-apresentacao-checkpoint1.txt) | o que apresentar na entrega intercalar, guião, perguntas prováveis com respostas, checklist |
 
 ## Regras do enunciado a não esquecer
 
