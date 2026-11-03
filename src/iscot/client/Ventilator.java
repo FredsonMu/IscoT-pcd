@@ -17,6 +17,32 @@ import iscot.client.gui.VentilatorIcon;
 import iscot.enums.Areas;
 import iscot.enums.Type;
 
+/**
+ * Ventilator — CÓDIGO BASE DO PROFESSOR (exemplo de atuador). Notas nossas:
+ *
+ * O QUE O PROFESSOR JÁ DÁ
+ *   - main com 3 argumentos: endereço, porto, área (ex.: "localhost 8080 LivingRoom").
+ *   - Janela com o VentilatorIcon; ao fim de 5 s liga-o (Thread.sleep + setAtivo),
+ *     só para mostrar o componente a mudar.
+ *   - setAtivo usa SwingUtilities.invokeLater (ComponentState): pode ser chamado de
+ *     qualquer thread.
+ *
+ * O QUE NOS FALTA FAZER (os TODO do professor)
+ *   - "for first phase: create an appropriate event hardcoded locally and change the
+ *     GUI accordingly": É A FASE 1. Criar localmente
+ *     new AreaClimateOrderMessage(area, AirConditioningMode.Ventilação), aplicá-la
+ *     (ventilator.setLigado(true)) e escrever no histórico "Ventilador ligado - HH:MM:SS";
+ *     depois Desligado. Juntar um ActionHistory à janela (BorderLayout.SOUTH).
+ *   - "TODO connect to server" / "TODO register with the server":
+ *       BrokerConnection + register(Type.ACTUATOR, area).                  [fase 3]
+ *   - "TODO: receive and handle messages from server":
+ *       startReceiving: se for AreaClimateOrderMessage,
+ *       setLigado(mode != Desligado) e histórico.                           [fase 4]
+ *   - Tirar o Thread.sleep(5000) de demonstração quando a fase 1 estiver feita.
+ *
+ * Esta é a classe-molde para Light, Irrigation e AirConditioner.
+ * Prioridade 3 (automação de clima) · Responsável: Fredson · Revisor: Celso
+ */
 public class Ventilator {
 
 	/**

@@ -2,6 +2,8 @@
 
 Repositório: https://github.com/FredsonMu/IscoT-pcd
 
+> O passo a passo de cada tarefa (branch → commits → push → pull request → revisão → merge) e a lista de quem faz cada classe estão em **[09-tarefas-e-git.md](09-tarefas-e-git.md)**. Este documento explica os conceitos e os comandos.
+
 ## Conceitos em 2 minutos
 
 | Termo | O que é |

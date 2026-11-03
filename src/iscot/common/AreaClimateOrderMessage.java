@@ -1,32 +1,32 @@
 package iscot.common;
 
 /**
- * AreaClimateOrderMessage — ordem para a climatização de uma área (ar condicionado e
- * ventilador).
+ * AreaClimateOrderMessage — ordem para a climatização de uma área (ventilador e ar
+ * condicionado).
  *
  * OBJETIVO
- *   Enunciado: "se o termómetro deteta a ultrapassagem de dada temperatura, espoleta a
- *   ligação de um ar condicionado". A apresentação mostra a GUI de um "ventilador" como
- *   atuador e refere "ar condicionado, ventilador" como dispositivos.
+ *   Enunciado 1.2: "se o termómetro deteta a ultrapassagem de dada temperatura,
+ *   espoleta a ligação de um ar condicionado". Código base: VentilatorIcon (ligado/
+ *   desligado) e ACIcon com o enum AirConditioningMode (Ventilação, Frio, Aquecimento,
+ *   Desligado).
  *
- * O QUE VAMOS IMPLEMENTAR (mesmo padrão que AreaLightingOrderMessage)
+ * O QUE VAMOS IMPLEMENTAR
  *   - extends OrderMessage.
- *   - Construtor (area, state). state = true -> arrefecer; false -> desligar.
- *   - getSubject() -> "temperatura".
- *   - toString(): AreaClimateOrderMessage [state=true, area=Sala, getType()=DECIDER]
+ *   - Campo final AirConditioningMode mode (enum do professor). Construtor (area, mode).
+ *   - toString(): AreaClimateOrderMessage [mode=Frio, area=LivingRoom, getType()=DECIDER]
  *
- * PORQUÊ UMA ORDEM PARA DOIS TIPOS DE ATUADOR
- *   É uma ordem de alto nível: "arrefecer a sala". O ar condicionado e o ventilador
- *   subscrevem o mesmo tópico (<area>/temperatura/ordens) e cada um executa-a à sua
- *   maneira. O decisor não precisa de saber que dispositivos existem.
+ * COMO CADA ATUADOR A INTERPRETA (ordem de alto nível)
+ *   AirConditioner -> ACIcon.setModo(mode)
+ *   Ventilator     -> VentilatorIcon.setLigado(mode != Desligado)
+ *   O decisor não precisa de saber que dispositivos existem.
  *
- * ALTERNATIVA
- *   Uma ordem por dispositivo (ArCondicionadoOrder, VentiladorOrder): o decisor teria de
- *   conhecer os dispositivos, o que contraria "ordens de alto nível".
+ * PORQUÊ "mode" E NÃO "state"
+ *   O ACIcon do professor trabalha com modos, não com ligado/desligado. Usar o mesmo enum
+ *   evita traduções. O ACIcon também aceita uma temperatura (16–30 ºC); só a usamos se
+ *   o professor pedir.
  *
  * LIGAÇÕES
- *   Criada por: DecisorClient (DECISOR_CLIMA). Consumida por: ActuatorClient
- *   (AR_CONDICIONADO, VENTILADOR).
+ *   Criada por: ClimateDecider. Consumida por: Ventilator, AirConditioner.
  *
  * Fase 2 · Responsável: Celso · Revisor: Fredson
  */

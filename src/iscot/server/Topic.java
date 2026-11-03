@@ -1,83 +1,75 @@
 package iscot.server;
 
 /**
- * Topic — a fila FIFO de eventos de um tópico e a lista de quem o subscreve.
+ * Topic — a fila FIFO de mensagens de UMA ÁREA da casa e a lista de quem a subscreve.
  * É O PRINCIPAL RECURSO PARTILHADO DO SERVIDOR.
  *
  * OBJETIVO NO ENUNCIADO
  *   Fase 2: "desenvolvimento de uma estrutura adequada para manter as mensagens
  *   correspondentes aos tópicos de eventos".
- *   Secção 1, ciclo de vida: o evento "só é consumido quando chega à cabeça desta
- *   fila"; "só deve ser removido da fila quando todos os clientes subscritos
- *   confirmarem o seu consumo, ou após um tempo de espera"; "em caso de esgotamento
- *   da fila, os clientes esperam até que haja novo evento".
+ *   Secção 1: "As mensagens são separadas no servidor em tópicos (...). Um cliente
+ *   publica e consome mensagens exclusivamente de um tópico."
+ *   Ciclo de vida: a mensagem "só é consumida quando chega à cabeça desta fila"; "só
+ *   deve ser removida da fila quando todos os clientes subscritos confirmarem o seu
+ *   consumo, ou após um tempo de espera"; "em caso de esgotamento da fila, os clientes
+ *   esperam até que haja novo evento".
  *
- * É A "MESA" DA AULA 04
- *   Produtor-consumidor: os ClientHandler de sensores/decisores são produtores
- *   (publicam), o TopicDispatcher é o consumidor. Diferença para a mesa da aula:
- *   o consumidor ESPREITA a cabeça sem a tirar, porque só sai depois dos acks.
+ * UM TÓPICO = UMA ÁREA (iscot.enums.Areas)
+ *   O cliente regista-se só com tipo e área (RegistrationMessage, código base). Com essa
+ *   informação, a forma de cumprir "um cliente publica e consome exclusivamente de um
+ *   tópico" é o tópico ser a ÁREA: na LivingRoom, o sensor publica no tópico LivingRoom,
+ *   o decisor consome e publica no tópico LivingRoom, as lâmpadas consomem do tópico
+ *   LivingRoom. Cada cliente reage às mensagens que lhe dizem respeito (pela classe) e
+ *   confirma todas. (Alternativa e dúvida: docs/03-decisoes.md, D24.)
+ *
+ * É A "MESA" DA AULA 04 (produtor-consumidor)
+ *   Produtores: ClientHandler de sensores e decisores (publish). Consumidor: o
+ *   TopicDispatcher. Diferença para a mesa: o consumidor ESPREITA a cabeça sem a tirar,
+ *   porque só sai depois dos acks.
  *
  * ESTADO INTERNO
- *   - nome do tópico (final)
- *   - fila de Message (SensorMessage ou OrderMessage; LinkedList: addLast / getFirst / removeFirst são O(1))
- *   - lista de ClientHandler subscritos
+ *   - área (final)
+ *   - fila de Message (LinkedList: addLast / getFirst / removeFirst são O(1))
+ *   - lista de ClientHandler subscritos (deciders e actuators da área)
  *   - contador para o próximo messageId
- *   - dados do evento pendente: id do evento à cabeça, o latch desse evento e o
- *     conjunto de deviceIds que já confirmaram (para ignorar acks repetidos)
+ *   - mensagem pendente: id da cabeça, o seu latch e os deviceIds que já confirmaram
  *
  * O QUE VAMOS IMPLEMENTAR (TODOS synchronized)
- *   - publish(mensagem): atribui messageId, põe no fim da fila, notifyAll().
+ *   - publish(msg): atribui messageId, põe no fim da fila, notifyAll().
  *   - waitForHead(): enquanto a fila estiver vazia, wait(); devolve a cabeça sem remover.
- *   - removeHead(): tira a cabeça e limpa os dados do evento pendente.
+ *   - removeHead(): tira a cabeça e limpa os dados da mensagem pendente.
  *   - subscribe(handler) / unsubscribe(handler).
  *   - subscribersSnapshot(): devolve uma CÓPIA da lista de subscritores.
- *   - setPending(messageId, latch): regista o latch do evento à cabeça.
- *   - ack(messageId, deviceId): se for o evento pendente e o device ainda não confirmou,
- *     latch.countdown().
- *   - snapshot(): cópia da fila, para mostrar no formulário de teste.
- *
- * LIGAÇÕES
- *   Criado e guardado por: TopicManager.
- *   Produtores: ClientHandler (publish) e, na fase 2, TopicTestFrame.
- *   Consumidor: TopicDispatcher (waitForHead, removeHead, setPending).
- *   Acks: ClientHandler (ack). Usa: Message, ModifiedCountdownLatch.
+ *   - setPending(messageId, latch) e ack(messageId, deviceId): só desconta uma vez por
+ *     dispositivo e só para a mensagem pendente.
+ *   - snapshot(): cópia da fila, para testes e para a TopicTestFrame.
  *
  * CONCORRÊNCIA: PORQUÊ CADA DECISÃO
- *   - synchronized em tudo: vários ClientHandler publicam ao mesmo tempo; "fila.add"
- *     e "proximoId++" não são atómicos (race condition, aula 03).
+ *   - synchronized em tudo: vários ClientHandler publicam ao mesmo tempo; "fila.add" e
+ *     "proximoId++" não são atómicos (race condition, aula 03).
  *   - wait em while: se acordar e a fila continuar vazia, volta a dormir.
- *   - notifyAll: pode haver threads à espera de coisas diferentes no mesmo objeto.
- *   - Cópias (snapshot) em vez de devolver a lista real: o dispatcher envia pela rede
- *     sem segurar o cadeado do tópico. Enviar pela rede é LENTO; segurar o cadeado
- *     durante isso bloquearia todos os publicadores (e arrisca deadlock).
- *   - setPending é chamado ANTES de enviar o evento: o ack pode chegar quase de
- *     imediato e não pode encontrar o latch ainda por registar.
- *   - Ordem de cadeados: ack() segura Topic e depois Latch. Ninguém segura Latch e
- *     depois pede Topic. Ordem fixa = sem ciclo = sem deadlock.
+ *   - notifyAll: mandamento 4 da aula 04.
+ *   - Cópia dos subscritores: o dispatcher envia pela rede SEM segurar o cadeado do
+ *     tópico (enviar é lento; segurar o cadeado bloquearia todos os publicadores).
+ *   - setPending ANTES de enviar: o ack pode chegar quase de imediato.
+ *   - Ordem de cadeados: ack() segura Topic e depois o latch; ninguém segura o latch e
+ *     depois pede o Topic. Ordem fixa = sem deadlock.
  *
  * ALTERNATIVAS E TRADE-OFFS
- *   - ArrayDeque em vez de LinkedList: um pouco mais rápida; LinkedList é a do professor.
- *   - Uma fila por subscritor (como o MQTT/RabbitMQ fazem): cada cliente anda ao seu
- *     ritmo, sem um lento atrasar os outros. Mas o enunciado exige que o tópico só
- *     avance quando TODOS confirmarem, por isso fila única.
+ *   - Uma fila por subscritor (como MQTT/RabbitMQ): cada cliente ao seu ritmo, mas o
+ *     enunciado exige que o tópico só avance quando TODOS confirmarem.
  *   - BlockingQueue do Java: proibida.
- *   - Fila com capacidade máxima (put espera se estiver cheia, como o produtor da
- *     aula 04): protege a memória se um sensor publicar muito depressa. Melhoria.
  *
  * DÚVIDAS
- *   - Tópico sem subscritores: o evento é descartado (latch de 0) ou espera que alguém
- *     subscreva (como as "retained messages" do MQTT)? Perguntar ao professor.
- *   - Se alguém subscreve enquanto um evento está pendente, conta para esse evento?
- *     Pela nossa decisão, não: o snapshot foi tirado antes.
+ *   - Tópico sem subscritores: a mensagem é descartada (latch de 0) ou espera?
  *
- * NA ENTREGA INTERCALAR (sem concorrência)
+ * NA FASE 2 (sem concorrência)
  *   Pode já ter synchronized (não faz mal com uma thread). A demo usa publish,
- *   snapshot e removeHead através do TopicTestFrame.
+ *   snapshot e removeHead (IscotTests e, opcionalmente, TopicTestFrame).
  *
  * COMO TESTAR
- *   Fase 2: publicar 3 LightSensorMessage, verificar ordem FIFO e ids 1, 2, 3.
- *   Fase 5: várias threads a publicar 1000 eventos cada; no fim tem de haver
- *   exatamente N*1000 eventos e ids sem repetição (sem synchronized vê-se a falhar).
+ *   Fase 2: publicar 3 LightSensorMessage na LivingRoom: ordem FIFO e ids 1, 2, 3.
+ *   Fase 5: 10 threads a publicar 1000 cada: 10 000 mensagens, ids sem repetição.
  *
  * Fase 2 (estrutura) e 5 (latch) · Responsável: Celso · Revisor: Fredson
  */

@@ -1,35 +1,30 @@
 package iscot.server;
 
 /**
- * TopicManager — o "índice" de todos os tópicos: nome -> Topic.
+ * TopicManager — guarda um Topic por área da casa.
  *
  * OBJETIVO NO ENUNCIADO
- *   Secção 1.1: o servidor publica eventos "nos tópicos correspondentes" e gere "as
+ *   Secção 1.1: o servidor publica as mensagens "nos tópicos correspondentes" e gere "as
  *   filas associadas a cada tópico". Alguém tem de saber que tópicos existem.
  *
  * O QUE VAMOS IMPLEMENTAR
- *   - Um Map<String, Topic> (HashMap).
- *   - getOrCreate(nome), synchronized: se o tópico não existe, cria-o, guarda-o e
- *     arranca o seu TopicDispatcher (a partir da fase 5); devolve-o.
- *   - Opcional: lista de nomes, para logs ou para a GUI de teste.
+ *   - Um Map<Areas, Topic> (HashMap ou EnumMap).
+ *   - get(Areas area), synchronized: se o tópico da área ainda não existe, cria-o,
+ *     guarda-o e (a partir da fase 5) arranca o seu TopicDispatcher; devolve-o.
  *
- * PORQUÊ CRIAR À PRIMEIRA UTILIZAÇÃO (lazy)
- *   Não sabemos de antemão que combinações área/grandeza vão aparecer. Criar os
- *   tópicos todos (5 áreas x 4 grandezas x 2 canais = 40) também funcionaria, mas
- *   criaria 40 threads de dispatcher a dormir sem necessidade.
+ * PORQUÊ CRIAR À PRIMEIRA UTILIZAÇÃO
+ *   Só há 5 áreas, por isso também se podiam criar todos no arranque. Criar quando
+ *   alguém precisa evita dispatchers a dormir em áreas sem clientes. Qualquer das duas
+ *   está certa; esta obriga a pensar no check-then-act (ver abaixo).
  *
  * CONCORRÊNCIA
- *   Dois clientes a registar-se ao mesmo tempo no mesmo tópico novo: sem synchronized,
- *   os dois viam "não existe", criavam dois Topic diferentes, e um deles perdia-se
- *   (o sensor publicava num e as lâmpadas ouviam no outro). Clássico check-then-act.
+ *   Dois clientes da mesma área a registar-se ao mesmo tempo: sem synchronized, os dois
+ *   viam "não existe", criavam dois Topic, e um perdia-se (o sensor publicava num e as
+ *   lâmpadas ouviam no outro). Clássico check-then-act (aula 03).
  *
  * LIGAÇÕES
- *   Criado por: Server (um só). Usado por: ClientHandler no registo.
+ *   Criado por: Server (um só). Usado por: ClientHandler (registo e publicação).
  *   Cria: Topic e TopicDispatcher.
- *
- * ALTERNATIVAS E TRADE-OFFS
- *   - ConcurrentHashMap.computeIfAbsent: elegante, mas é biblioteca de concorrência
- *     do Java (perguntar se é permitido). O synchronized é simples e chega.
  *
  * Fase 2 · Responsável: Celso · Revisor: Fredson
  */

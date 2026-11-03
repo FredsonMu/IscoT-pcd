@@ -1,364 +1,222 @@
-IscoT - APRESENTAÇÃO DO CHECKPOINT 1 (ENTREGA E DISCUSSÃO INTERMÉDIA)
-====================================================================
+IscoT - APRESENTAÇÕES DO CHECKPOINT 1
+=====================================
 Grupo: Fredson e Celso
-Quando: DUAS apresentações
-  sex 6 nov       primeira apresentação do projeto ao professor (na nossa aula):
-                  fases 1 e 2 a correr. Ver secção 0.
-  10-13 nov       entrega e discussão intermédia OFICIAL, no nosso turno de
-                  laboratório (confirmar o dia): fases 1, 2 e, se possível, 3.
+
+  sex 6 nov    primeira apresentação do projeto ao professor (na nossa aula):
+               FASES 1 E 2. Secções 0 a 6.
+  10-13 nov    entrega e discussão intermédia OFICIAL (turno de laboratório):
+               fases 1, 2 e, se possível, 3. Secção 7.
   Se o professor tratar o dia 6 como a entrega oficial, a secção 0 é o mínimo
-  garantido para passar. Perguntar-lhe no dia 6 se a discussão de 10-13 se mantém.
+  garantido para passar.
 
 
-0. DIA 6 DE NOVEMBRO - O QUE LEVAR
-----------------------------------
-FASES 1 E 2, sem concorrência (sem servidor, sockets, threads nem latch).
+0. O QUE O PROFESSOR PEDE PARA A FASE 1 E 2
+-------------------------------------------
+Enunciado: "apresentação das fases iniciais, referentes a aspetos ainda sem
+concorrência". Fase 1: "ambientar-se aos vários componentes gráficos
+disponibilizados". Fase 2: "estrutura adequada para manter as mensagens
+correspondentes aos tópicos".
 
-O QUE MOSTRAR                                   CLASSES                         QUEM
-Mensagens no formato do professor:              Area, DeviceType, Message,      Celso
-  LightSensorMessage [light=320.0, area=Sala,   SensorMessage,
-  getType()=SENSOR]                             LightSensorMessage,
-                                                TemperatureSensorMessage,
-                                                OrderMessage,
-                                                AreaLightingOrderMessage
-Mensagens em filas separadas por tópico,        Topic, TopicManager             Celso
-  por ordem (FIFO), com ids
-Formulário: área + tipo + valor -> Publicar;    TopicTestFrame                  Fredson
-  "Consumir cabeça" tira a mais antiga
-Atuador com estado e histórico                  ActuatorFrame + histórico       Fredson
-  "Lâmpada ligada - HH:MM:SS"                   (ActuatorClient)
-Arquitetura planeada                            diagrama de docs/02             os dois
-
-NÃO é preciso no dia 6: servidor, sockets, threads, latch, e as janelas de sensor e
-decisor (podem esperar pelo código base da GUI do professor).
-
-CALENDÁRIO ATÉ DIA 6
-  sáb 31 out   CP0  repositório clonado nos dois PCs; Celso começa common + Topic;
-                    Fredson começa o formulário e a janela do atuador
-  seg  2 nov   CP1  common completo com o toString do professor; o formulário já
-                    publica no Topic real
-  qua  4 nov   CP2  demo completa; IscotTests grupo 1 a passar; cada um explica o
-                    código do outro
-  qui  5 nov   CP3  ensaio de 5 minutos cronometrado; perguntas cruzadas com a
-                    secção 5; tag checkpoint-0
-  sex  6 nov        apresentação; perguntas ao professor (secção 7)
-
-GUIÃO DO DIA 6 (cerca de 5 minutos) - versão curta da secção 4
-  [1 min] O problema (Celso)
-  [1 min] Arquitetura planeada (Fredson)
-  [2 min] Demo das fases 1-2 (secção 4, "DEMO FASES 1-2", passos 1 a 7)
-  [1 min] Próximos passos e perguntas ao professor
-  Saltar a "DEMO FASE 3": é para 10-13 nov.
-
-
-1. O QUE É PEDIDO
------------------
-Apresentação do projeto pelo professor (23 out):
-  "Entrega e discussão intermédia: 10-13 de novembro nos laboratórios. Não é
-  necessária nenhuma entrega formal, basta comparecer com o projeto desenvolvido."
-Enunciado:
-  "apresentação das fases iniciais, referentes a aspetos ainda sem concorrência
-  (...) breve apresentação do trabalho feito. Esta entrega é obrigatória e
-  eliminatória, e feita presencialmente."
+Código base da GUI (Ventilator.java): "for first phase: create an appropriate
+event hardcoded locally and change the GUI accordingly".
 
 Tradução:
-  OBRIGATÓRIO  Fase 1 - GUI: componentes que simulam sensores e atuadores, e um
-                         formulário de teste para publicar mensagens.
-               Fase 2 - Estrutura de tópicos: as mensagens organizadas por tópico,
-                         em filas FIFO.
-  OBJETIVO     Fase 3 - Servidor e ligação inicial. Temos uma semana a mais do que
-  NOSSO                 planeámos: levamos o cenário da sala do professor a
-                        registar-se no servidor.
-  NÃO É PRECISO Fases 4-6 (mensagens pela rede, latch, confirmações): só explicar
-                o plano.
-
-Não há nada para submeter: levamos o projeto a correr no Eclipse (nos dois PCs).
+  FASE 1  usar os componentes do professor (LightIcon, SensorControl, ...) e
+          mudá-los com mensagens criadas no próprio programa, sem servidor.
+  FASE 2  as mensagens organizadas em tópicos (um por área), em filas FIFO.
+  NÃO     servidor, sockets, threads nossas, latch, decisores, outras automações,
+          GUI do servidor, formulário.
 
 
-2. COMO O PROFESSOR DESCREVEU O SISTEMA (e onde está no nosso projeto)
-----------------------------------------------------------------------
-"Rede segundo o modelo Cliente-Servidor, com servidor central"  -> Server, ClientHandler
-"Cada cliente apenas conhece o servidor a que se liga"           -> o cliente envia
-      mensagens tipadas; é o SERVIDOR que escolhe o tópico (D21)
-"sensores: clientes ativos"                                     -> SensorClient
-"decisores: clientes reativos ... decisões de alto nível"       -> DecisorClient
-"atuadores: clientes passivos que cumprem ordens"               -> ActuatorClient
-"o servidor pode funcionar sem GUI; uma GUI minimal pode ajudar" -> ServerMonitorFrame
-"mensagem RegistrationMessage, que inclui os identificadores do
- tipo de cliente e área da casa"                                -> RegistrationMessage
-"LightSensorMessage [light=320.0, area=Sala, getType()=SENSOR]"  -> LightSensorMessage
-"AreaLightingOrderMessage [state=true, area=Sala,
- getType()=DECIDER]"                                            -> AreaLightingOrderMessage
-Cenário: sala com 1 sensor de iluminação, 1 decisor que acende
-"sempre que a iluminação está abaixo de 500lux" e 2 lâmpadas
-(candeeiro e teto) = 4 clientes                                -> as nossas launch configs
-"Há código base apenas para a GUI, ainda por disponibilizar"    -> janelas mínimas, a trocar
+1. O QUE TEM DE ESTAR NA MAIN ATÉ QUINTA À TARDE
+------------------------------------------------
+(detalhes de cada tarefa em docs/09-tarefas-e-git.md)
 
-
-3. O QUE TEM DE ESTAR FEITO
----------------------------
-ATÉ QUINTA 5 NOV (mínimo para passar: fases 1 e 2)
 CELSO
-  [ ] common/Area                 as 5 áreas + parse
-  [ ] common/DeviceType           Role (SENSOR, DECIDER, ACTUATOR), tipos com grandeza,
-                                  parse, readingsTopic, ordersTopic, subscribeTopic
-  [ ] common/Message              área, messageId, senderId, getType(), Serializable
-  [ ] common/SensorMessage, LightSensorMessage, TemperatureSensorMessage
-  [ ] common/OrderMessage, AreaLightingOrderMessage, AreaClimateOrderMessage
-                                  todas com o toString no formato do professor
-  [ ] server/Topic                publish, waitForHead, removeHead, snapshot,
-                                  subscribe/unsubscribe (já com synchronized)
-  [ ] server/TopicManager         getOrCreate (sem arrancar dispatchers ainda)
+  [ ] C1  Message, SensorMessage, OrderMessage, AckMessage
+          (Serializable; Areas e Type do professor)          -> merge HOJE (ter 3)
+  [ ] C2  LightSensorMessage, AreaLightingOrderMessage
+          (toString no formato do professor)                  -> merge HOJE (ter 3)
+  [ ] C3  Topic (FIFO por área, synchronized, wait/notifyAll)  -> qua 4
+  [ ] C4  TopicManager (um Topic por área)                     -> qua 4
+  [ ] C5  outras mensagens (humidade, temperatura, rega, clima) -> qui 5, se der
 FREDSON
-  [ ] gui/TopicTestFrame          área + tipo de mensagem + valor, tópico calculado,
-                                  Publicar, Consumir cabeça, estado das filas
-  [ ] gui/SensorFrame             valor (slider) para luz e temperatura
-  [ ] gui/DecisorFrame            limiar (500 lux) + registo do que recebe e decide
-  [ ] gui/ActuatorFrame           estado com cor (lâmpada, ventilador) + histórico
-                                  "Lâmpada ligada - HH:MM:SS"
-  [ ] test/IscotTests             grupo 1 (estrutura de tópicos e formato das mensagens)
-
-ATÉ SEGUNDA 9 NOV (objetivo: fase 3)
-CELSO
-  [ ] server/Server               ServerSocket, accept, um ClientHandler por cliente,
-                                  newDeviceId synchronized, argumento "gui"
-  [ ] server/ClientHandler        streams pela ordem certa, registo, recusa de tipo
-  [ ] common/RegistrationMessage  request / reply
-FREDSON
-  [ ] client/BrokerConnection     ligação + register
-  [ ] client/ClientMain           4 argumentos, registo, mostra o id ou o motivo da recusa
-  [ ] gui/ServerMonitorFrame      clientes ligados (com invokeLater)
-
+  [ ] F1  ActionHistory (lista com "Lâmpada ligada - HH:MM:SS") -> hoje / qua 4
+  [ ] F2  Light fase 1 (LightIcon + histórico, ordem criada localmente) -> qua 4
+  [ ] F3  LightSensor fase 1 (SensorControl; imprime a LightSensorMessage) -> qua 4
+  [ ] F5  IscotTests grupo 1 (formato, FIFO, ids, tópicos)     -> qui 5
+  [ ] F4  Ventilator fase 1 (TODO do professor)                -> qui 5, se der
 OS DOIS
-  [ ] tudo na main do GitHub, compila sem erros (Project > Clean)
-  [ ] README com o estado das fases atualizado
-  [ ] tag:  git tag checkpoint-1   e   git push --tags
+  [ ] tudo compila (Project > Clean) nos dois PCs
+  [ ] cada um explica as classes do outro
+  [ ] git tag checkpoint-0   e   git push --tags
 
 
-4. GUIÃO DA APRESENTAÇÃO (cerca de 10 minutos)
-----------------------------------------------
-[1 min] O PROBLEMA                                           (fala: Celso)
-  "Simulamos uma casa inteligente. Sensores leem o ambiente, decisores tomam
-  decisões de alto nível, atuadores controlam os dispositivos. Cada cliente só
-  conhece o servidor IscoT, um message broker que organiza as mensagens em
-  tópicos, como o MQTT em domótica."
+2. GUIÃO DO DIA 6 (cerca de 5 minutos)
+--------------------------------------
+[1 min] O PROBLEMA                                           (Celso)
+  "Uma casa inteligente em rede cliente-servidor. Sensores leem o ambiente,
+  decisores tomam decisões de alto nível, atuadores controlam os dispositivos.
+  Cada cliente só conhece o servidor IscoT, que organiza as mensagens em tópicos."
 
-[2 min] ARQUITETURA                                          (fala: Fredson)
-  Mostrar o diagrama de docs/02-arquitetura.md.
-  - Pacotes: common (tipos e mensagens partilhados), sync (o nosso latch), server,
-    client, gui, test.
-  - Mensagens tipadas como na vossa apresentação: LightSensorMessage,
-    AreaLightingOrderMessage, todas com área e getType().
-  - O servidor põe cada mensagem no tópico area/grandeza/canal:
-    LightSensorMessage da Sala -> sala/luz/leituras;
-    AreaLightingOrderMessage da Sala -> sala/luz/ordens.
-    O decisor subscreve as leituras; as lâmpadas subscrevem as ordens.
-  - Threads previstas: main no accept, uma por cliente (ClientHandler), uma por
-    tópico (TopicDispatcher), e a do Swing.
+[1 min] ARQUITETURA                                          (Fredson)
+  Diagrama de docs/02-arquitetura.md.
+  - Usamos o vosso código base: Areas, Type, os ícones e o SensorControl.
+  - Um programa por dispositivo, como o HumiditySensor e o Ventilator, com
+    endereço, porto e área.
+  - Um tópico por área: na LivingRoom, o sensor, o decisor e as lâmpadas usam
+    todos o tópico LivingRoom; cada um reage às mensagens que lhe dizem respeito.
 
-[3 min] DEMO FASES 1-2 (sem rede)                            (fala: Celso; Fredson conduz)
-  1. Abrir o formulário de teste (launch "9 Formulario de teste").
-  2. Publicar LightSensorMessage na Sala com 320, 450 e 700 lux, e
-     TemperatureSensorMessage no Quarto com 27.5.
-  3. Mostrar: sala/luz/leituras com #1, #2, #3 por ordem; quarto/temperatura/
-     leituras com #1. Mostrar o toString no formato do professor.
-  4. "Consumir cabeça" em sala/luz/leituras: sai a #1 (FIFO).
-  5. Publicar AreaLightingOrderMessage true na Sala: aparece em sala/luz/ordens.
-  6. Abrir as janelas de sensor, decisor e atuador; no atuador mudar o estado e
-     mostrar o histórico com a hora.
-  7. Correr o IscotTests: todos OK.
+[2 min] DEMO                                                 (Celso fala, Fredson conduz)
+  1. "04 Lampada LivingRoom" duas vezes: cada lâmpada acende e apaga com uma
+     AreaLightingOrderMessage criada localmente; mostrar o histórico com a hora.
+  2. "02 Sensor luz LivingRoom": mexer o slider; a consola mostra
+     LightSensorMessage [light=320.0, area=LivingRoom, getType()=SENSOR].
+  3. "12 Testes": mensagens a entrar no tópico LivingRoom com ids 1, 2, 3 por
+     ordem; consumir a cabeça tira a #1; uma mensagem do Garden vai para outro
+     tópico.
 
-[2 min] DEMO FASE 3 (se estiver pronta)                       (fala: Fredson; Celso conduz)
-  1. "1b Servidor com monitor".
-  2. "4 Sensor luz sala", "3 Decisor luz sala", "2 Lampada sala" duas vezes:
-     o cenário de 4 clientes da vossa apresentação.
-  3. Mostrar na GUI do servidor os 4 ids diferentes.
-  4. "8 Tipo invalido": recusado com motivo, servidor continua a funcionar.
-
-[1 min] PRÓXIMOS PASSOS                                      (fala: Celso)
-  "Na fase 4 as mensagens passam a ir pela rede. Na fase 5, o botão 'Consumir
-  cabeça' é substituído por um dispatcher por tópico, que entrega a cabeça a todos
-  os subscritores - por exemplo às duas lâmpadas - e só a remove quando o nosso
-  ModifiedCountdownLatch chegar a zero, ou ao fim de um timeout."
-
-[1 min] PERGUNTAS AO PROFESSOR                               (os dois)
-  Ver secção 7.
+[1 min] PRÓXIMOS PASSOS E PERGUNTAS                          (os dois)
+  "A seguir: servidor com uma thread por cliente e o registo com a
+  RegistrationMessage. Depois, as mensagens pela rede e o nosso
+  ModifiedCountdownLatch: a cabeça do tópico só sai quando todos confirmarem."
+  Perguntas: secção 5.
 
 
-5. PERGUNTAS PROVÁVEIS DO PROFESSOR E COMO RESPONDER
+3. PERGUNTAS PROVÁVEIS DO PROFESSOR E COMO RESPONDER
 ----------------------------------------------------
-Responder curto, com o termo certo, e ligar ao código. Se não souberem, dizer o
-que acham e porquê: é melhor do que inventar.
+P: Porque é que cada área é um tópico?
+R: O registo leva só o tipo de cliente e a área, e o enunciado diz que um cliente
+   publica e consome exclusivamente de um tópico. Com tópico por área, o sensor
+   publica, o decisor consome e publica, e as lâmpadas consomem, todos no tópico da
+   sua área. Cada um reage pela classe da mensagem e confirma tudo, para o latch
+   chegar a zero. É uma das perguntas que vos queremos fazer.
 
-P: Porque é que as mensagens são classes diferentes e não uma genérica?
-R: Seguimos a vossa apresentação: LightSensorMessage, AreaLightingOrderMessage.
-   Cada mensagem tem campos com tipo (light em double, state em boolean), por isso
-   o compilador apanha erros e não há parsing de texto. Têm duas classes-mãe
-   abstratas, SensorMessage e OrderMessage, para o servidor tratar todas as
-   leituras e todas as ordens da mesma forma, com um só instanceof.
+P: As lâmpadas recebem as leituras do sensor? Porquê?
+R: Sim, porque estão no mesmo tópico. Ignoram-nas, mas confirmam-nas: se não
+   confirmassem, o tópico ficava parado até ao timeout em cada leitura.
 
-P: Quem decide o tópico de uma mensagem?
-R: O servidor, a partir da área e da grandeza da mensagem: uma LightSensorMessage
-   da Sala vai para sala/luz/leituras. O cliente só conhece o servidor e não
-   escolhe tópicos. Assim um sensor não publica no sítio errado, e o servidor pode
-   recusar uma lâmpada que tente dar ordens.
+P: Porque é que as mensagens são classes diferentes?
+R: Seguimos a vossa apresentação: LightSensorMessage e AreaLightingOrderMessage.
+   Cada uma tem campos com tipo (light em double, state em boolean), por isso o
+   compilador apanha erros e não há parsing de texto. SensorMessage e OrderMessage
+   são classes-mãe abstratas, para o servidor tratar todas as leituras e todas as
+   ordens da mesma forma.
 
-P: Porquê tópicos com área?
-R: Para as ordens de uma divisão não chegarem às outras: AreaLightingOrderMessage
-   da Sala só acende as lâmpadas da Sala. É também a convenção do MQTT
-   (tópicos hierárquicos com "/").
+P: O que é que fizeram na fase 1?
+R: Usámos os vossos componentes, como pede o TODO do Ventilator: a lâmpada cria
+   localmente uma AreaLightingOrderMessage, aplica-a ao LightIcon e escreve no
+   histórico. O sensor usa o SensorControl e cria a LightSensorMessage quando o
+   slider é largado.
 
-P: Porque escolheram esta estrutura para os tópicos? Porquê LinkedList?
-R: Um Map de nome para Topic no TopicManager, e cada Topic tem uma fila FIFO,
-   porque o enunciado diz que a mensagem só é consumida à cabeça da fila e que o
-   servidor avança quando a cabeça é consumida. LinkedList: addLast, getFirst e
-   removeFirst são de custo constante, e é a estrutura dos slides de coordenação.
+P: O histórico é atualizado de outra thread mais tarde. Como evitam problemas?
+R: O Swing não é thread-safe. O ActionHistory faz o trabalho dentro de
+   SwingUtilities.invokeLater, tal como o vosso ComponentState.setAtivo. Assim só
+   a thread do Swing mexe na lista.
 
-P: Porque é que o Topic espreita a cabeça em vez de a remover logo?
-R: Porque a mensagem só pode sair quando todos os subscritores confirmarem (ou
-   passar o timeout). No cenário da sala, a AreaLightingOrderMessage só sai quando
-   as duas lâmpadas confirmarem.
+P: Porque é que o Topic já tem synchronized, se ainda não há threads?
+R: Porque vai ser partilhado: vários ClientHandler vão publicar no mesmo tópico ao
+   mesmo tempo e o dispatcher vai ler. addLast e nextId++ não são atómicos; sem
+   synchronized perdíamos mensagens ou repetíamos ids. Com uma thread só não faz
+   mal, e não temos de reescrever a classe depois.
 
-P: Se ainda não há threads, porque é que o Topic já tem synchronized?
-R: Porque vai ser um recurso partilhado: vários ClientHandler vão publicar no
-   mesmo tópico ao mesmo tempo e o dispatcher vai ler. addLast e nextId++ não são
-   atómicos: sem synchronized perdíamos mensagens ou repetíamos ids. Com uma
-   thread só não faz mal, e não temos de reescrever a classe depois.
+P: Porquê LinkedList? Porque espreitam a cabeça em vez de a remover?
+R: addLast, getFirst e removeFirst são de custo constante, e é a estrutura dos
+   slides de coordenação. A cabeça só pode sair quando todos os subscritores
+   confirmarem, por isso o dispatcher espreita e só remove depois do latch.
 
-P: Como funciona o registo?
-R: O cliente liga-se e envia uma RegistrationMessage com a área e o tipo em
-   texto, tal como vêm dos argumentos do main. O servidor valida-os; se o tipo não
-   existir responde que recusa, com o motivo, e fecha. Se existir, dá-lhe um id
-   único (método synchronized, porque dois clientes podem registar-se ao mesmo
-   tempo), subscreve-o no tópico certo e responde com o id. A partir daí a ligação
-   serve nos dois sentidos.
-
-P: Porque vai o tipo em texto e não como enum?
-R: Porque o servidor tem de poder recusar tipos inexistentes. Se o cliente
-   convertesse para enum, um tipo inválido nunca sairia do cliente.
-
-P: Que threads vai ter o servidor? Com o vosso cenário da sala, quantas?
-R: A main, presa no accept; uma por cliente (ClientHandler), presa no readObject;
-   uma por tópico (TopicDispatcher), à espera na fila ou no latch; e, com a GUI, a
-   do Swing. Sala com 1 sensor, 1 decisor e 2 lâmpadas: 1 + 4 + 2 (sala/luz/leituras
-   e sala/luz/ordens) = 7, mais a do Swing.
-
-P: Porque uma thread por cliente?
-R: Porque o enunciado o pede, e porque a leitura do socket bloqueia: com uma só
-   thread, enquanto esperava por um cliente não atendia mais ninguém.
-
-P: A GUI do servidor é chamada por muitas threads. Como evitam problemas?
-R: Cada método da ServerMonitorFrame só faz SwingUtilities.invokeLater: o trabalho
-   corre na thread do Swing, que é a única que toca nos componentes (confinamento).
-   E não fazemos nada lento lá dentro, para não atrasar as threads do servidor.
+P: Que threads vai ter o servidor no cenário da sala?
+R: A main no accept, um ClientHandler por cliente (4) no readObject e um
+   TopicDispatcher para o tópico LivingRoom, à espera na fila ou no latch: 6.
 
 P: Como vai funcionar o latch?
 R: Quando uma mensagem chega à cabeça, o dispatcher cria um latch com o número de
-   subscritores (2 lâmpadas -> 2), envia-a a todos e faz await com timeout. Cada
-   AckMessage faz countdown. Quando chega a zero, ou acaba o tempo, remove a cabeça
-   e passa à seguinte. É feito por nós, com synchronized, wait(tempo que falta)
-   dentro de while, e notifyAll quando chega a zero, porque o enunciado proíbe o
-   CountDownLatch do Java.
+   subscritores, envia-a a todos e faz await com timeout. Cada AckMessage faz
+   countdown. Quando chega a zero, ou acaba o tempo, remove a cabeça. Feito por nós
+   com synchronized, wait(tempo que falta) dentro de while e notifyAll, porque o
+   enunciado proíbe o CountDownLatch do Java.
 
 P: Porquê while e não if à volta do wait? Porquê notifyAll?
-R: while: ao acordar, a condição pode já não ser verdade (outra thread chegou
-   primeiro, ou spurious wakeup); o Java segue os monitores Mesa, em que o notify é
-   só uma sugestão. notifyAll: podem estar threads à espera de condições diferentes
-   no mesmo objeto, e o notify podia acordar a errada e o programa parar.
-
-P: E se uma lâmpada nunca confirmar ou a ligação cair?
-R: O await tem timeout: o tópico avança na mesma. E no finally do ClientHandler o
-   cliente sai dos subscritores, por isso as mensagens seguintes já não contam com
-   ele.
-
-P: Porque é que as vossas janelas são tão simples?
-R: Porque vão ser substituídas pelo código base que nos vai dar. Separámos as
-   janelas (pacote gui) da lógica (pacote client): quando o código base sair,
-   trocamos o interior das janelas e os clientes não mudam.
+R: while: ao acordar, a condição pode já não ser verdade (spurious wakeup, ou outra
+   thread chegou primeiro); o Java segue os monitores Mesa. notifyAll: podem estar
+   threads à espera de condições diferentes no mesmo objeto.
 
 P: Como dividiram o trabalho?
-R: Cada um num pacote diferente (Celso: common e server; Fredson: gui e client),
-   com o common como contrato entre os dois. Trabalhamos em branches no GitHub e
-   cada pull request é revisto pelo outro, que tem de o conseguir explicar. O latch
-   vamos escrever os dois em separado e comparar.
+R: Celso: mensagens e servidor. Fredson: dispositivos e GUI. Cada tarefa é uma
+   branch no GitHub e entra na main por pull request revisto pelo outro, que tem de
+   a conseguir explicar. O latch vamos escrever os dois em separado e comparar.
 
 P (ao Fredson): Explica-me o Topic.publish.
-P (ao Celso):   Explica-me o histórico do atuador e o TopicTestFrame.
-R: É a pergunta para ver se os dois sabem tudo. Ensaiar no CP3 e no CP5: cada um apresenta
-   e explica o código do outro.
+P (ao Celso):   Explica-me a Light e o ActionHistory.
+R: Ensaiar na quinta: cada um explica o código do outro.
 
 
-6. SE ALGUMA COISA CORRER MAL NA DEMO
--------------------------------------
-- Ter o projeto aberto e compilado nos DOIS computadores.
-- Ter a tag checkpoint-1 no GitHub: se um PC falhar, clona-se e corre-se.
-- Se a fase 3 não funcionar no momento: mostrar só as fases 1-2 (são as
-  obrigatórias) e explicar o que falta.
-- Se uma janela não abrir: correr o IscotTests e mostrar a estrutura na consola.
-- Antes de começar: parar todas as consolas e "Remove All Terminated" (um servidor
-  esquecido dá BindException).
-- Se o professor pedir uma alteração ao vivo, pensar em voz alta: ele avalia o
-  raciocínio, não só o resultado.
+4. SE ALGUMA COISA CORRER MAL
+-----------------------------
+- Projeto compilado nos DOIS computadores; tag checkpoint-0 no GitHub.
+- Se a Light falhar: mostrar o IscotTests e o Ventilator do professor.
+- Antes de começar: parar todas as consolas ("Remove All Terminated").
+- Se o professor pedir uma alteração ao vivo, pensar em voz alta.
 
 
-7. PERGUNTAS A FAZER AO PROFESSOR
----------------------------------
-Escrever as respostas aqui no próprio dia (e em docs/07-duvidas.md).
+5. PERGUNTAS A FAZER AO PROFESSOR NO DIA 6
+------------------------------------------
+(escrever as respostas aqui e em docs/07-duvidas.md)
 
-1. O prazo do Moodle é 14 de dezembro às 09:00 e as discussões 15-18 de dezembro?
+1. Os tópicos são por área, ou por área e grandeza?
    Resposta:
-
-2. Para esta entrega esperava também a ligação ao servidor (fase 3)?
+2. A discussão intermédia continua a 10-13 nov? Esperava a fase 3 nessa altura?
    Resposta:
-
-3. A proibição dos mecanismos de coordenação do Java abrange AtomicInteger,
-   ReentrantLock e ConcurrentHashMap? Podemos usar SwingUtilities.invokeLater?
+3. Quantas automações são obrigatórias (luz, rega, clima)? Chuva/janelas é para
+   fazer, sem componente no código base?
    Resposta:
-
-4. O decisor consome um tópico (leituras) e publica noutro (ordens). Está de
-   acordo com "um cliente publica e consome exclusivamente de um tópico"?
+4. O que é o tipo DWC? O servidor deve recusá-lo?
    Resposta:
-
-5. Na RegistrationMessage, o "tipo de cliente" é o papel (SENSOR/DECIDER/ACTUATOR)
-   ou o tipo de dispositivo (LAMPADA, SENSOR_LUZ)?
+5. Seguimos o código base (um programa por dispositivo, 3 argumentos) em vez do
+   "java iscot {IP PORT Area Tipo}" do enunciado?
    Resposta:
-
-6. Quando sai o código base da GUI? É obrigatório usá-lo?
-   Resposta:
-
-7. Uma mensagem num tópico sem subscritores é descartada ou fica à espera?
-   Resposta:
-
-8. O envio para o cliente pode ser feito pela thread do tópico (dispatcher), ou
-   tem de ser a thread dedicada do cliente?
+6. AtomicInteger, ReentrantLock e ConcurrentHashMap contam como proibidos?
    Resposta:
 
 O que fazemos conforme a resposta:
-  - Se Atomic/Lock forem proibidos: mantemos synchronized (já é o nosso plano).
-  - Se o decisor só puder usar um tópico: um tópico por área/grandeza, com
-    leituras e ordens juntas, e cada cliente ignora as mensagens que não são para
-    ele. Mais simples no servidor, mais lógica nos clientes.
-  - Se o tipo no registo for só o papel: a RegistrationMessage passa a levar o
-    papel e a grandeza separados (ex.: ACTUATOR + luz); muda só o parse no
-    ClientHandler.
-  - Se o código base da GUI for obrigatório: trocamos o interior das janelas,
-    mantendo os métodos públicos (setOn, addHistory, ...).
-  - Se o dispatcher não for aceite: passamos a ter, por cliente, uma thread leitora
-    e uma escritora com caixa de saída (docs/03-decisoes.md, D5-B).
-  - Se as mensagens sem subscritores tiverem de esperar: o waitForHead passa a
-    esperar também por "há subscritores".
+  - Tópicos por grandeza: a RegistrationMessage ganha um campo (a grandeza que o
+    cliente ouve) e o TopicManager muda de chave. O resto fica.
+  - Mais automações obrigatórias: seguem o mesmo padrão (C5, C9, F8).
+  - Só a luz: rega e clima passam a extras.
+  - Atomic/Lock proibidos: mantemos synchronized (já é o plano).
 
 
-8. CALENDÁRIO COMPLETO
-----------------------
-sáb 31 out   CP0  repositório clonado; cada um começa a sua parte (secção 0)
-seg  2 nov   CP1  common completo; formulário a publicar no Topic real
-qua  4 nov   CP2  fases 1-2 a correr; IscotTests grupo 1 a passar.
-                  MÍNIMO GARANTIDO.
-qui  5 nov   CP3  ensaio do dia 6; tag checkpoint-0
-sex  6 nov        PRIMEIRA APRESENTAÇÃO (fases 1-2)
-seg  9 nov   CP4  fase 3: cenário da sala (4 clientes) registado no servidor,
-                  tipo inválido recusado, GUI do servidor com os clientes
-véspera      CP5  ensaio completo, cada um apresenta a parte do outro;
-                  perguntas cruzadas com a secção 5; tag checkpoint-1
-10-13 nov         ENTREGA E DISCUSSÃO INTERMÉDIA OFICIAL (fases 1-3)
+6. CALENDÁRIO ATÉ DIA 6
+-----------------------
+ter 3 nov (hoje)  Celso: C1, C2 com merge hoje      Fredson: F1
+qua 4 nov         Celso: C3, C4                     Fredson: F2, F3
+qui 5 nov         Celso: C5 se der                  Fredson: F5; F4 se der
+                  tarde: tudo na main; troca de explicações
+                  noite: ensaio de 5 minutos; tag checkpoint-0
+sex 6 nov         apresentação
+
+
+7. PARA 10-13 DE NOVEMBRO (fase 3)
+----------------------------------
+O QUE MOSTRAR A MAIS
+  - "01 Servidor"; "02 Sensor luz", "03 Decisor luz", "04 Lampada" (duas vezes):
+    o cenário de 4 clientes do professor regista-se no servidor com 4 ids
+    diferentes (consola do servidor).
+  - Um registo com tipo inválido (DWC ou null) é recusado com motivo, e o servidor
+    continua a funcionar.
+TAREFAS
+  [ ] C6 RegistrationMessage    [ ] C7 Server + ClientHandler (registo)
+  [ ] F6 BrokerConnection (ligar e registar)
+CALENDÁRIO
+  sáb 7 - seg 9 nov   C6, C7, F6
+  véspera do turno    ensaio completo; tag checkpoint-1
+PERGUNTAS A MAIS
+  P: Porque uma thread por cliente?
+  R: O enunciado pede-o, e o readObject bloqueia: com uma só thread, enquanto se
+     esperava por um cliente não se atendia mais ninguém.
+  P: Porque é que newDeviceId é synchronized?
+  R: Dois registos ao mesmo tempo correm em duas threads; contador++ não é
+     atómico e os dois podiam receber o mesmo id.
+  P: Porque criam primeiro o ObjectOutputStream?
+  R: O construtor do ObjectInputStream espera pelo cabeçalho do outro lado; se os
+     dois lados criassem primeiro o input, ficavam os dois parados (deadlock).

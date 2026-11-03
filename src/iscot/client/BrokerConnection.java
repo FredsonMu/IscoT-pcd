@@ -1,41 +1,41 @@
 package iscot.client;
 
 /**
- * BrokerConnection — esconde o socket e os canais de objetos do resto do cliente.
+ * BrokerConnection — o código de ligação ao servidor, partilhado por todos os
+ * dispositivos (sensores, decisores, atuadores).
  *
- * OBJETIVO NO ENUNCIADO E NA APRESENTAÇÃO
- *   Fases 3 e 4: ligação inicial e troca de mensagens. Apresentação: os clientes
- *   "funcionarão em aplicações independentes, e comunicam com o servidor através de
- *   sockets, usando canais de objetos"; "cada cliente apenas conhece o servidor".
+ * OBJETIVO
+ *   Código base: em cada main o professor deixou "TODO connect to the server" e
+ *   "TODO register with the server". Em vez de repetir isso em 10 classes, fica aqui.
+ *   Apresentação: os clientes "comunicam com o servidor através de sockets, usando
+ *   canais de objetos"; "cada cliente apenas conhece o servidor".
  *
  * O QUE VAMOS IMPLEMENTAR
- *   - Construtor(host, porto): abre o Socket; cria ObjectOutputStream + flush; depois
- *     o ObjectInputStream (mesma ordem que no servidor, senão deadlock).
- *   - register(área, tipo): envia RegistrationMessage.request(área, tipo), lê a
- *     RegistrationMessage de resposta; se recusada, lança exceção com o motivo; se
- *     aceite, guarda e devolve o deviceId.
+ *   - Construtor(host, porto): Socket; ObjectOutputStream + flush; depois
+ *     ObjectInputStream (mesma ordem que no servidor, senão deadlock).
+ *   - register(Type type, Areas area): envia RegistrationMessage.request(type, area),
+ *     lê a resposta; se recusada, lança exceção com o motivo; se aceite, guarda e
+ *     devolve o deviceId.
  *   - send(Message), synchronized: preenche o senderId, writeObject + flush + reset.
- *   - receive(): readObject (bloqueia até chegar algo). Só a thread recetora o chama.
- *   - close() e getDeviceId().
+ *   - startReceiving(handler): arranca UMA thread recetora que, em ciclo, faz
+ *     readObject, chama handler.accept(mensagem) e depois envia
+ *     AckMessage(messageId) (decisores e atuadores confirmam TUDO o que recebem).
+ *     "handler" pode ser um java.util.function.Consumer<Message>, como o
+ *     DoubleConsumer que o professor usa no SensorControl.
+ *   - close(), getDeviceId().
  *
- * LIGAÇÕES
- *   Criada por: ClientMain. Usada por: SensorClient, DecisorClient, ActuatorClient.
- *   Do outro lado da ligação está um ClientHandler.
+ * PORQUÊ UMA THREAD RECETORA
+ *   readObject bloqueia. Se corresse na thread main ou na do Swing, o programa (ou a
+ *   janela) ficava parado à espera de mensagens.
  *
  * CONCORRÊNCIA
- *   send é synchronized porque pode ser chamado por duas threads ao mesmo tempo: no
- *   decisor, a thread recetora envia o Ack e a ordem; no sensor, o slider da GUI (thread
- *   do Swing) e a simulação automática podem enviar ao mesmo tempo.
+ *   send é synchronized: a thread recetora (acks, ordens do decisor) e a thread do
+ *   Swing (callback do SensorControl) podem enviar ao mesmo tempo.
  *
- * PORQUÊ ESTA CLASSE (encapsulamento)
- *   Se um dia mudássemos de objetos para texto, ou acrescentássemos reconexão
- *   automática, só esta classe mudava. É a mesma ideia de separar a GUI da lógica.
+ * LIGAÇÕES
+ *   Usada por: todos os mains de dispositivo. Do outro lado: um ClientHandler.
  *
- * DÚVIDAS
- *   - Se o servidor for abaixo, o cliente deve tentar religar sozinho? Não é pedido;
- *     por agora mostra erro e termina.
- *
- * Fase 3/4 · Responsável: Fredson · Revisor: Celso
+ * Fase 3 (ligação e registo) e 4 (envio/receção) · Responsável: Fredson · Revisor: Celso
  */
 public class BrokerConnection {
 }

@@ -4,6 +4,8 @@ Cada decisão segue o mesmo formato: **o problema**, **as opções**, **o que ga
 
 > Trade-off = compromisso. Quase nunca há uma opção melhor em tudo: ganha-se numa coisa e paga-se noutra. Saber dizer o que se paga é o que mostra que se percebeu.
 
+> **Atualização de 3 nov (código base da GUI do professor):** as decisões **D23 a D27**, no fim, substituem partes de decisões anteriores. Estão substituídas: **D10** (o tipo vai como enum `Type`), **D11** e **D21** (o tópico é a área), **D17** e **D22** (as janelas são as do professor; já não há `ClientMain` único nem `DeviceType`). As outras mantêm-se.
+
 ---
 
 ### D1 · Como criar threads: `extends Thread` ou `implements Runnable`
@@ -145,3 +147,54 @@ Antes, o cliente enviava o nome do tópico dentro do `Event`. Agora o cliente en
 - `Role` passa a `SENSOR`, `DECIDER`, `ACTUATOR`, os valores que o professor mostra em `getType()`. Os tipos de dispositivo (`LAMPADA`, `VENTILADOR`, …) continuam em português, porque são o que escrevemos nos argumentos.
 - Acrescentámos o atuador `VENTILADOR`, que aparece nas figuras do professor, e a `ServerMonitorFrame`, a GUI opcional do servidor ("mostrando as mensagens trocadas").
 - O professor vai dar "código base apenas para a GUI". Fazemos janelas mínimas para a demo e, quando sair, trocamos só o interior das janelas, mantendo os métodos públicos que os clientes usam (D17).
+
+---
+
+## Decisões depois do código base da GUI (3 nov)
+
+### D23 · Usar o código base do professor tal como está
+O professor deu `iscot.enums` (`Areas`, `Type`, `AirConditioningMode`), `iscot.client.gui` (ícones e `SensorControl`) e dois exemplos (`HumiditySensor`, `Ventilator`).
+
+| | adaptar o nosso desenho ao código base (escolhido) | manter o nosso desenho e traduzir |
+|---|---|---|
+| Ganha | o avaliador reconhece o código; menos trabalho; nada de traduções entre os nossos enums e os dele | ficávamos com os nomes em português |
+| Perde | refazer parte dos esqueletos | duas versões do mesmo conceito (`Area` e `Areas`), erros de tradução, e o professor estranharia |
+
+Consequências: removemos as nossas `Area` e `DeviceType` e as nossas janelas de sensor, decisor e atuador. Os ficheiros do professor só se mexem nos `TODO` dos exemplos.
+
+### D24 · Um tópico por área
+A `RegistrationMessage` leva só tipo e área (apresentação e código base) e o enunciado diz que "um cliente publica e consome mensagens exclusivamente de um tópico".
+
+| | um tópico por área (escolhido) | um tópico por área e grandeza ("LivingRoom/luz") |
+|---|---|---|
+| Ganha | cumpre as duas frases à letra; o registo não precisa de mais nada; só 5 tópicos | cada cliente só recebe o que lhe interessa; menos acks inúteis |
+| Perde | cada cliente recebe também mensagens que ignora (e tem de as confirmar); um decisor recebe as suas próprias ordens de volta | o registo teria de dizer a grandeza que o cliente ouve (o professor não o pede); o decisor usaria dois tópicos |
+
+**Perguntar ao professor no dia 6.** Se ele preferir tópicos por grandeza, muda o `TopicManager` (chave) e a `RegistrationMessage` (mais um campo); o resto fica.
+
+### D25 · Um programa por dispositivo, com 3 argumentos
+O código base tem um `main` por dispositivo, com `endereço porto área`. Antes tínhamos um `ClientMain` único com 4 argumentos (o enunciado escreve `java iscot { IP PORT Area Tipo }`).
+
+| | um `main` por dispositivo (escolhido, como o professor) | um `ClientMain` com o tipo como argumento |
+|---|---|---|
+| Ganha | igual ao código base; cada dispositivo tem a sua janela e a sua lógica, legíveis | menos classes |
+| Perde | mais classes pequenas | um `switch` grande; diferente do que o professor deu |
+
+O código repetido (ligar, registar, receber, confirmar) fica numa só classe, a `BrokerConnection`, e o histórico na `ActionHistory`.
+
+### D26 · Que automações fazemos
+| Automação | Componentes no código base | Decisão |
+|---|---|---|
+| luz (cenário do professor) | `SensorControl`, `LightIcon` | **prioridade 1**, primeiro de ponta a ponta |
+| humidade → rega | `HumiditySensor`, `IrrigationIcon` | prioridade 2 |
+| temperatura → ventilador / ar condicionado | `VentilatorIcon`, `ACIcon` | prioridade 3 |
+| chuva → janelas | nenhum | **não fazemos** sem o professor pedir |
+
+Também não usamos o que os componentes têm a mais e o enunciado não pede: intensidade da `LightIcon`, zona e duração da `IrrigationIcon`, temperatura do `ACIcon`.
+
+### D27 · O que é opcional e fica para o fim
+- `ServerMonitorFrame`: o professor diz que o servidor "pode funcionar sem GUI".
+- `TopicTestFrame`: o enunciado diz que "pode existir" um formulário; o código base propõe outra coisa para a fase 1 (ordens criadas localmente nos atuadores).
+- `ReceptionConfirmationMessage`: é o extra (fase 6).
+
+Só se faz depois de as fases 1 a 5 estarem completas.

@@ -204,7 +204,7 @@ Um "portão" com contador N: cada `countdown()` desconta 1, quem chama `await()`
 |---|---|---|
 | Message broker | intermediário que recebe mensagens de produtores e entrega a consumidores, sem que se conheçam | o servidor |
 | Publish / subscribe | quem publica não sabe quem recebe; quem subscreve recebe tudo do tópico | sensores e decisores publicam; decisores e atuadores subscrevem |
-| Tópico | canal com nome que agrupa mensagens de um tema | `sala/luz/leituras` |
+| Tópico | canal com nome que agrupa mensagens de um tema | um por área da casa: `LivingRoom`, `Garden`, … |
 | Evento | uma mensagem num tópico | `SensorMessage` / `OrderMessage` (ex.: `LightSensorMessage`) |
 | Ack (acknowledgement) | confirmação de receção | `AckMessage` |
 | QoS (MQTT) | nível de garantia: 0 sem confirmação, 1 pelo menos uma vez (com ack), 2 exatamente uma vez | o nosso modelo parece QoS 1 |

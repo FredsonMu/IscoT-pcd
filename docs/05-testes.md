@@ -4,11 +4,11 @@ Erros de concorrência não aparecem quando se testa com uma thread nem, muitas 
 
 ## Nível 1 · Peças sozinhas (sem rede)
 
-Correr as classes de `iscot.test` como programa (botão direito › Run As › Java Application). Cada uma descreve, no comentário, o que verifica.
+Correr `12 Testes` (`iscot.test.IscotTests`). O comentário da classe descreve cada verificação.
 
 | Teste | Fase | Verifica |
 |---|---|---|
-| grupo 1 · estrutura | 2 | FIFO, ids sequenciais, tópicos separados, `getOrCreate` devolve o mesmo objeto, nomes de tópicos, parse de áreas e tipos |
+| grupo 1 · mensagens e estrutura | 2 | formato do `toString` do professor, FIFO, ids sequenciais, tópicos por área separados, `TopicManager.get` devolve o mesmo objeto |
 | grupo 2 · latch | 5 | timeout, libertação, latch a zero, acks a mais, interrupção |
 | grupo 3 · carga | 5 | 10 threads × 1000 publicações: nada se perde, nenhum id repete |
 
@@ -25,29 +25,26 @@ Correr as classes de `iscot.test` como programa (botão direito › Run As › J
 
 ### Cenários por fase
 
-**Fase 1–2 (entrega intercalar, 10–13 nov)**
-- [ ] `9 Formulario de teste`: publicar 3 `LightSensorMessage` na Sala (320, 450, 700) e 1 `TemperatureSensorMessage` no Quarto; aparecem em `sala/luz/leituras` e `quarto/temperatura/leituras`, em filas separadas, por ordem.
-- [ ] "Consumir cabeça" remove o mais antigo.
-- [ ] O `toString` das mensagens segue o formato do professor: `LightSensorMessage [light=320.0, area=Sala, getType()=SENSOR]`.
-- [ ] Valor inválido no formulário mostra aviso e não publica nada.
-- [ ] As janelas de sensor, decisor e atuador abrem e reagem aos botões; o histórico do atuador mostra `Lâmpada ligada - HH:MM:SS`.
+**Fase 1–2 (dia 6)**
+- [ ] `04 Lampada LivingRoom`: a lâmpada acende e apaga com uma `AreaLightingOrderMessage` criada localmente; o histórico mostra `Lâmpada ligada - HH:MM:SS` e `Lâmpada desligada - HH:MM:SS`.
+- [ ] `02 Sensor luz LivingRoom`: largar o slider imprime `LightSensorMessage [light=..., area=LivingRoom, getType()=SENSOR]` (uma vez por largada, não durante o arrasto).
+- [ ] `12 Testes`, grupo 1: todos OK.
+- [ ] Argumentos errados (2 argumentos, ou área `sala` em vez de `LivingRoom`) dão uma mensagem clara.
 
 **Fase 3 · ligação**
 - [ ] Servidor arranca e escreve que está à escuta.
-- [ ] Três clientes recebem três ids diferentes.
-- [ ] Cenário do professor: 1 sensor de luz, 1 decisor de luz e 2 lâmpadas na Sala registam-se; com `1b Servidor com monitor`, aparecem os 4 na GUI do servidor.
-- [ ] `8 Tipo invalido` é recusado com mensagem clara e o servidor continua a funcionar.
-- [ ] Área inválida (`garagem`) também é recusada.
+- [ ] Cenário do professor: `02`, `03` e `04` duas vezes registam-se com 4 ids diferentes.
+- [ ] Um registo com tipo `DWC` ou `null` é recusado com motivo e o servidor continua a funcionar.
 - [ ] Cliente sem servidor ligado mostra erro claro (não um stack trace).
 
 **Fase 4 · mensagens**
-- [ ] Sensor publica → o decisor da mesma área e grandeza recebe; o de outra área não.
-- [ ] Uma lâmpada que tente enviar uma `AreaLightingOrderMessage` é ignorada pelo servidor (só decisores dão ordens).
-- [ ] Decisor publica ordem → todas as lâmpadas da sala recebem; as do quarto não.
+- [ ] Sensor de luz publica → o decisor da mesma área recebe; um decisor do Garden não.
+- [ ] As lâmpadas também recebem a leitura do sensor, ignoram-na e confirmam-na.
+- [ ] Uma mensagem de ordem enviada por um atuador é ignorada pelo servidor (só decisores dão ordens).
 - [ ] Fechar a janela de um cliente não faz o servidor rebentar.
 
 **Fase 5 · latch**
-- [ ] 2 lâmpadas: o log do servidor diz que o evento foi consumido com 0 em falta.
+- [ ] Cenário da sala: cada mensagem espera 3 confirmações (2 lâmpadas + decisor); o log do servidor diz 0 em falta.
 - [ ] Um cliente que recebe mas não confirma (comentar o envio do ack temporariamente): o tópico avança ao fim do timeout com 1 em falta.
 - [ ] Fechar uma lâmpada a meio: o evento seguinte já só espera pela outra.
 - [ ] Publicar 20 leituras seguidas: chegam todas, por ordem.
@@ -56,21 +53,20 @@ Correr as classes de `iscot.test` como programa (botão direito › Run As › J
 - [ ] Atuador responde OK a ordens conhecidas e NOK a desconhecidas; o servidor regista o resultado.
 
 **Automações (demo final)**
-- [ ] Luz abaixo de 500 lux → as duas lâmpadas da sala acendem (cenário do professor).
-- [ ] Terra seca → rega liga; humidade sobe → rega desliga.
-- [ ] Começa a chover → janelas fecham.
-- [ ] Temperatura alta → ar condicionado e ventilador ligam.
+- [ ] Luz abaixo de 500 lux → as duas lâmpadas da LivingRoom acendem (cenário do professor).
+- [ ] Humidade baixa no Garden → rega liga; humidade sobe → rega desliga.
+- [ ] Temperatura alta → ventilador e ar condicionado ligam (modo `Frio`).
 
 ## Nível 3 · Carga e robustez
 
 - O grupo 3 do `IscotTests`, corrido várias vezes seguidas.
 - **Experiência didática**: tirar temporariamente o `synchronized` do `Topic.publish`, correr o teste de carga e ver os números a falhar. Voltar a pôr. É a race condition da aula 03 ao vivo; vale a pena mostrar na oral.
-- Vários sensores em modo automático com intervalo curto (100 ms) durante 1 minuto: o servidor não pode encravar.
+- Vários sensores e várias lâmpadas na mesma área, a mexer os sliders depressa: o servidor não pode encravar.
 
 ## Quando algo encrava: como investigar
 
 1. **Correr em Debug** (ícone do inseto) em vez de Run.
-2. Quando parar, na vista **Debug**, clicar no processo › **Suspend**. Aparecem todas as threads e a linha onde cada uma está. Os nomes das threads (`dispatcher-sala/luz/ordens`, ...) servem exatamente para isto.
+2. Quando parar, na vista **Debug**, clicar no processo › **Suspend**. Aparecem todas as threads e a linha onde cada uma está. Os nomes das threads (`dispatcher-LivingRoom`, ...) servem exatamente para isto.
 3. Ver onde estão:
    - todas em `readObject` → provavelmente ninguém enviou nada (ou ordem dos streams errada);
    - uma em `wait` do `Topic` → fila vazia (normal) ou faltou um `notifyAll`;
