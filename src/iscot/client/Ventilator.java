@@ -20,6 +20,18 @@ import iscot.enums.Type;
 /**
  * Ventilator — CÓDIGO BASE DO PROFESSOR (exemplo de atuador). Notas nossas:
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       F4 (fase 1) e F8 (rede) · feature/ventilador-fase1, feature/clima
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        OPCIONAL no dia 6 (F4, só se sobrar tempo, qui 5 nov): a fase 1 que o professor pede no TODO.
+ *   No dia 6:     Se houver tempo: cria AreaClimateOrderMessage localmente, liga o VentilatorIcon e escreve no histórico.
+ *   Depende de:   C5 (AreaClimateOrderMessage), F1.
+ *   Liga-se a:    Fase 4: recebe do ClimateDecider.
+ *   Código base:  FICHEIRO DO PROFESSOR: só se mexe nos TODO.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * O QUE O PROFESSOR JÁ DÁ
  *   - main com 3 argumentos: endereço, porto, área (ex.: "localhost 8080 LivingRoom").
  *   - Janela com o VentilatorIcon; ao fim de 5 s liga-o (Thread.sleep + setAtivo),
@@ -41,7 +53,6 @@ import iscot.enums.Type;
  *   - Tirar o Thread.sleep(5000) de demonstração quando a fase 1 estiver feita.
  *
  * Esta é a classe-molde para Light, Irrigation e AirConditioner.
- * Prioridade 3 (automação de clima) · Responsável: Fredson · Revisor: Celso
  */
 public class Ventilator {
 

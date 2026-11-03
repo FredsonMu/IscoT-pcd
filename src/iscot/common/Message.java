@@ -3,6 +3,18 @@ package iscot.common;
 /**
  * Message — classe-mãe de tudo o que viaja pelo socket.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C1 · feature/mensagens-base
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        SIM (fase 2). Merge na main HOJE, ter 3 nov: o Fredson precisa dela.
+ *   No dia 6:     É a base das mensagens que a Light e o LightSensor criam localmente e que o IscotTests põe nos tópicos.
+ *   Depende de:   iscot.enums.Areas e Type (professor).
+ *   Liga-se a:    Estendida por todas as mensagens. Guardada pelo Topic.
+ *   Código base:  Usa os enums Areas e Type do professor em vez dos nossos.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO (enunciado, apresentação e código base do professor)
  *   Fase 4: mensagens "através de canais de objetos". A apresentação mostra que cada
  *   mensagem leva a ÁREA e o TIPO de quem a enviou:
@@ -57,7 +69,6 @@ package iscot.common;
  *   num pacote partilhado). Campos não serializáveis (Socket, Swing) dão
  *   NotSerializableException. Os enums do professor são serializáveis.
  *
- * Fase 2 (classes) e 4 (envio) · Responsável: Celso · Revisor: Fredson
  */
 public abstract class Message {
 }

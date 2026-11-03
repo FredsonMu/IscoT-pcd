@@ -3,6 +3,18 @@ package iscot.client;
 /**
  * IrrigationDecider — programa do decisor da rega.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C9 · feature/rega
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        NÃO. Fase 4.
+ *   No dia 6:     Nada.
+ *   Depende de:   C5, F6.
+ *   Liga-se a:    Recebe do HumiditySensor; envia para a Irrigation.
+ *   Código base:  —
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Enunciado 1.2: "se o sensor de humidade avisar que a terra está seca, o agente
  *   decisor da rega define uma ordem de irrigação, e os atuadores ligam a irrigação do
@@ -19,7 +31,6 @@ package iscot.client;
  * LIGAÇÕES
  *   Recebe de: HumiditySensor (código base). Envia para: Irrigation.
  *
- * Prioridade 2 (automação de rega) · Responsável: Celso · Revisor: Fredson
  */
 public class IrrigationDecider {
 }

@@ -3,6 +3,18 @@ package iscot.client;
 /**
  * Light — programa de uma lâmpada (um processo por lâmpada).
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       F2 · feature/light
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        SIM (fase 1). Merge até qua 4 nov. No dia 6: só a versão local (sem servidor).
+ *   No dia 6:     Lançar "04 Lampada LivingRoom" duas vezes: cada lâmpada cria AreaLightingOrderMessage(true), acende o LightIcon e escreve no histórico; depois false, apaga.
+ *   Depende de:   C2 (AreaLightingOrderMessage), F1 (ActionHistory).
+ *   Liga-se a:    Fase 4: recebe as ordens do LightingDecider pela BrokerConnection.
+ *   Código base:  Molde: Ventilator do professor; usa LightIcon; é exatamente o TODO da fase 1 do professor.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Apresentação: "existirão dois clientes atuadores, um para cada lâmpada, que
  *   executarão as ordens do decisor"; o atuador "recebe do servidor mensagens da classe
@@ -29,7 +41,6 @@ package iscot.client;
  * LIGAÇÕES
  *   Usa: LightIcon (professor), ActionHistory, BrokerConnection, AreaLightingOrderMessage.
  *
- * Prioridade 1 (cenário do professor) · Responsável: Fredson · Revisor: Celso
  */
 public class Light {
 }

@@ -3,6 +3,18 @@ package iscot.client;
 /**
  * AirConditioner — programa do atuador de ar condicionado.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       F8 · feature/clima
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        NÃO. Fase 4.
+ *   No dia 6:     Nada.
+ *   Depende de:   C5, F1, F6.
+ *   Liga-se a:    Recebe do ClimateDecider.
+ *   Código base:  Molde: Ventilator; usa ACIcon.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Enunciado 1.2: a temperatura alta "espoleta a ligação de um ar condicionado".
  *   Código base: ACIcon com setModo(AirConditioningMode).
@@ -23,7 +35,6 @@ package iscot.client;
  *   Usa: ACIcon, AirConditioningMode, ActionHistory, BrokerConnection,
  *   AreaClimateOrderMessage.
  *
- * Prioridade 3 (automação de clima) · Responsável: Fredson · Revisor: Celso
  */
 public class AirConditioner {
 }

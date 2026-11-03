@@ -11,6 +11,18 @@ import iscot.enums.Type;
 /**
  * HumiditySensor — CÓDIGO BASE DO PROFESSOR (exemplo de sensor). Notas nossas:
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C9 · feature/rega
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        NÃO. Fase 4 (automação da rega).
+ *   No dia 6:     Nada. (O exemplo do professor já abre a janela; pode mostrar-se como "componente dado".)
+ *   Depende de:   C5, F6.
+ *   Liga-se a:    Envia para o IrrigationDecider.
+ *   Código base:  FICHEIRO DO PROFESSOR: só se mexe nos TODO.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * O QUE O PROFESSOR JÁ DÁ
  *   - main com 3 argumentos: endereço, porto, área (Areas.valueOf(args[2]),
  *     ex.: "localhost 8080 Garden"). Se não forem 3, escreve "Invalid arguments!".
@@ -27,7 +39,6 @@ import iscot.enums.Type;
  *     o ícone (ex.: "💧") ou deixar.
  *
  * Esta é a classe-molde para LightSensor e TemperatureSensor.
- * Prioridade 2 (automação de rega) · Responsável: Celso · Revisor: Fredson
  */
 public class HumiditySensor {
 

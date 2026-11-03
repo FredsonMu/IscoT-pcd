@@ -3,6 +3,18 @@ package iscot.server;
 /**
  * Server — o message broker IscoT. Ponto de entrada do servidor.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C7 · feature/server
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        NÃO. Fase 3, para 10–13 nov (começar sáb 7).
+ *   No dia 6:     Nada.
+ *   Depende de:   C4, C6.
+ *   Liga-se a:    Cria os ClientHandler; recebe as ligações das BrokerConnection.
+ *   Código base:  —
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Apresentação: "Rede segundo o modelo Cliente-Servidor, com servidor central para
  *   gerir a comunicação"; "o servidor pode funcionar sem GUI".
@@ -33,7 +45,6 @@ package iscot.server;
  *   Arrancar com 8080; ligar 3 clientes; 3 ids diferentes. Segundo servidor no mesmo
  *   porto: BindException.
  *
- * Fase 3 · Responsável: Celso · Revisor: Fredson
  */
 public class Server {
 }

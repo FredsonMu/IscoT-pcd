@@ -3,6 +3,18 @@ package iscot.server;
 /**
  * TopicManager — guarda um Topic por área da casa.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C4 · feature/topic-manager
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        SIM (fase 2). Merge até qua 4 nov. No dia 6: get(area) sem arrancar dispatchers.
+ *   No dia 6:     O IscotTests pede o tópico da LivingRoom e do Garden e mostra que são diferentes, e que pedir duas vezes dá o mesmo.
+ *   Depende de:   C3.
+ *   Liga-se a:    Usado pelo IscotTests (dia 6) e pelo ClientHandler (fase 3–4).
+ *   Código base:  Chave = Areas do professor.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO NO ENUNCIADO
  *   Secção 1.1: o servidor publica as mensagens "nos tópicos correspondentes" e gere "as
  *   filas associadas a cada tópico". Alguém tem de saber que tópicos existem.
@@ -26,7 +38,6 @@ package iscot.server;
  *   Criado por: Server (um só). Usado por: ClientHandler (registo e publicação).
  *   Cria: Topic e TopicDispatcher.
  *
- * Fase 2 · Responsável: Celso · Revisor: Fredson
  */
 public class TopicManager {
 }

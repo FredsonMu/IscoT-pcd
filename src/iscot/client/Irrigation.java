@@ -3,6 +3,18 @@ package iscot.client;
 /**
  * Irrigation — programa do atuador de rega.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C9 · feature/rega
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        NÃO. Fase 4.
+ *   No dia 6:     Nada.
+ *   Depende de:   C5, F1, F6.
+ *   Liga-se a:    Recebe do IrrigationDecider.
+ *   Código base:  Molde: Ventilator; usa IrrigationIcon.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Enunciado 1.2: "os atuadores ligam a irrigação do jardim até o nível desejado de
  *   humidade ser atingido". Código base: IrrigationIcon (setAtiva).
@@ -18,7 +30,6 @@ package iscot.client;
  * LIGAÇÕES
  *   Usa: IrrigationIcon, ActionHistory, BrokerConnection, AreaIrrigationOrderMessage.
  *
- * Prioridade 2 (automação de rega) · Responsável: Celso · Revisor: Fredson
  */
 public class Irrigation {
 }

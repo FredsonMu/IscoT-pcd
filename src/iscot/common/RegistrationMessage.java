@@ -2,6 +2,18 @@ package iscot.common;
 
 /**
  * RegistrationMessage — o registo do cliente no servidor: o pedido (cliente -> servidor)
+ *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C6 · feature/registration
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        NÃO. Fase 3, para 10–13 nov.
+ *   No dia 6:     Nada.
+ *   Depende de:   C1.
+ *   Liga-se a:    Enviada pela BrokerConnection; lida pelo ClientHandler.
+ *   Código base:  Nome dado pelo professor; leva Type e Areas do código base.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
  * e a resposta (servidor -> cliente). Nome dado pelo professor na apresentação.
  *
  * OBJETIVO
@@ -33,7 +45,6 @@ package iscot.common;
  *   Resposta criada por: ClientHandler. Lida por: BrokerConnection.register, que lança
  *   uma exceção com o motivo se não for aceite.
  *
- * Fase 3 · Responsável: Celso · Revisor: Fredson
  */
 public class RegistrationMessage {
 }

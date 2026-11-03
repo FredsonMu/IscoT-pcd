@@ -2,6 +2,18 @@ package iscot.server;
 
 /**
  * TopicDispatcher — thread (uma por tópico/área) que entrega a cabeça da fila a todos
+ *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C10 · feature/dispatcher
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        NÃO. Fase 5.
+ *   No dia 6:     Nada.
+ *   Depende de:   C3, C8, A1 (latch).
+ *   Liga-se a:    Criado pelo TopicManager; envia pelo ClientHandler.
+ *   Código base:  —
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
  * os subscritores e só avança quando todos confirmarem, ou quando o tempo acabar.
  *
  * OBJETIVO NO ENUNCIADO
@@ -43,7 +55,6 @@ package iscot.server;
  *   - 2 lâmpadas + 1 decisor na LivingRoom, 1 leitura: os 3 recebem; faltaram 0.
  *   - Um cliente que nunca confirma: o tópico avança ao fim do timeout; faltaram 1.
  *
- * Fase 5 · Responsável: Celso · Revisor: Fredson
  */
 public class TopicDispatcher {
 }

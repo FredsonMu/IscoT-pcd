@@ -3,6 +3,18 @@ package iscot.common;
 /**
  * ReceptionConfirmationMessage — EXTRA: o atuador confirma que executou a ordem.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       A2 · feature/confirmacoes
+ *   Responsável:  os dois (dividir no momento)   ·   Revisor: o outro
+ *   Dia 6:        NÃO. Extra (fase 6), só no fim.
+ *   No dia 6:     Nada.
+ *   Depende de:   C1, fase 5 completa.
+ *   Liga-se a:    Enviada pelos atuadores; contada pelo servidor.
+ *   Código base:  Nome imposto pelo enunciado.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO NO ENUNCIADO
  *   Secção 2.3 e fase 6. O nome da classe é imposto pelo enunciado. Formato pedido:
  *     message:  "mensagem-recebida"
@@ -32,7 +44,6 @@ package iscot.common;
  *   (o tópico fica preso enquanto a rega enche). Alternativa: avançar o tópico com o
  *   Ack e contar as confirmações em paralelo, noutro latch. Discutir com o professor.
  *
- * Fase 6 (extra) · Responsável: a decidir · Revisor: o outro
  */
 public class ReceptionConfirmationMessage {
 }

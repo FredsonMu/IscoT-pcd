@@ -2,6 +2,18 @@ package iscot.client;
 
 /**
  * BrokerConnection — o código de ligação ao servidor, partilhado por todos os
+ *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       F6 · feature/broker-connection
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        NÃO. Fase 3 (ligar e registar) para 10–13 nov; fase 4 (enviar e receber).
+ *   No dia 6:     Nada.
+ *   Depende de:   C6, C7.
+ *   Liga-se a:    Usada por todos os dispositivos; fala com o ClientHandler.
+ *   Código base:  Resolve os TODO "connect to the server" e "register with the server" dos exemplos do professor.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
  * dispositivos (sensores, decisores, atuadores).
  *
  * OBJETIVO
@@ -35,7 +47,6 @@ package iscot.client;
  * LIGAÇÕES
  *   Usada por: todos os mains de dispositivo. Do outro lado: um ClientHandler.
  *
- * Fase 3 (ligação e registo) e 4 (envio/receção) · Responsável: Fredson · Revisor: Celso
  */
 public class BrokerConnection {
 }

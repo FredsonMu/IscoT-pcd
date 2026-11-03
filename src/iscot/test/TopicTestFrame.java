@@ -3,6 +3,18 @@ package iscot.test;
 /**
  * TopicTestFrame — OPCIONAL: formulário para publicar mensagens nos tópicos sem rede.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       A4 · feature/formulario
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        NÃO. Opcional; só se tudo o resto do dia 6 estiver pronto.
+ *   No dia 6:     Se existir: publicar mensagens com uma janela em vez da consola.
+ *   Depende de:   C1–C4.
+ *   Liga-se a:    Usa Topic e TopicManager.
+ *   Código base:  O enunciado diz que "pode existir"; o professor propõe outra forma para a fase 1.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO NO ENUNCIADO
  *   Fase 1: "Para teste das funcionalidades iniciais, PODE existir um formulário com
  *   campos de texto para o tópico e conteúdo da mensagem." É uma sugestão, não uma
@@ -24,7 +36,6 @@ package iscot.test;
  * LIGAÇÕES
  *   Usa: Topic, TopicManager, Areas, as mensagens. Não usa rede nem threads nossas.
  *
- * Opcional · Responsável: Fredson · Revisor: Celso
  */
 public class TopicTestFrame {
 }

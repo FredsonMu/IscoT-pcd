@@ -3,6 +3,18 @@ package iscot.client;
 /**
  * LightSensor — programa do sensor de luminosidade (um processo por sensor).
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       F3 · feature/light-sensor
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        SIM (fase 1). Merge até qua 4 nov. No dia 6: só a versão local (imprime a mensagem).
+ *   No dia 6:     Lançar "02 Sensor luz LivingRoom": largar o slider imprime LightSensorMessage [light=..., area=LivingRoom, getType()=SENSOR].
+ *   Depende de:   C2 (LightSensorMessage).
+ *   Liga-se a:    Fase 4: envia pela BrokerConnection para o LightingDecider.
+ *   Código base:  Molde: HumiditySensor do professor; usa SensorControl.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Apresentação: o sensor de luminosidade "reage a alterações na luminosidade" e envia
  *   LightSensorMessage. Cenário da sala: 1 sensor de iluminação.
@@ -28,7 +40,6 @@ package iscot.client;
  *   Usa: SensorControl (professor), BrokerConnection, LightSensorMessage.
  *   Do outro lado: LightingDecider da mesma área.
  *
- * Prioridade 1 (cenário do professor) · Responsável: Fredson · Revisor: Celso
  */
 public class LightSensor {
 }

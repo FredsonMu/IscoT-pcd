@@ -3,6 +3,18 @@ package iscot.server.gui;
 /**
  * ServerMonitorFrame — GUI OPCIONAL do servidor: clientes ligados e mensagens trocadas.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       A3 · feature/monitor
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        NÃO. Opcional, só depois das fases 1–5.
+ *   No dia 6:     Nada.
+ *   Depende de:   C7, C8.
+ *   Liga-se a:    Chamada pelo ClientHandler e pelo TopicDispatcher.
+ *   Código base:  O professor diz que o servidor "pode funcionar sem GUI"; o código base não a traz.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO NA APRESENTAÇÃO DO PROFESSOR
  *   "o servidor pode funcionar sem GUI; uma GUI minimal pode ajudar a monitorizar o
  *   estado do sistema, p.ex. mostrando as mensagens trocadas" (slide "GUI: opcional").
@@ -23,7 +35,6 @@ package iscot.server.gui;
  *   método só agenda trabalho na thread do Swing, os componentes só são tocados por
  *   ela (confinamento): não é preciso synchronized. Nada lento lá dentro.
  *
- * Opcional · Responsável: Fredson · Revisor: Celso
  */
 public class ServerMonitorFrame {
 }

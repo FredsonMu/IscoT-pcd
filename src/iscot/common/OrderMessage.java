@@ -3,6 +3,18 @@ package iscot.common;
 /**
  * OrderMessage — classe-mãe (abstrata) das ordens de alto nível enviadas pelos decisores.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C1 · feature/mensagens-base
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        SIM (fase 2). Merge HOJE, ter 3 nov.
+ *   No dia 6:     Classe-mãe da AreaLightingOrderMessage que a Light cria localmente no dia 6.
+ *   Depende de:   Message.
+ *   Liga-se a:    Estendida por AreaLightingOrderMessage, AreaIrrigationOrderMessage, AreaClimateOrderMessage.
+ *   Código base:  getType() devolve Type.DECIDER (enum do professor).
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Apresentação: "decisores: clientes reativos que reagem a leituras dos sensores e
  *   tomam decisões de alto nível"; "ordens para todas as lâmpadas ou outras fontes de
@@ -25,7 +37,6 @@ package iscot.common;
  *   AreaClimateOrderMessage. Criadas por: LightingDecider, IrrigationDecider,
  *   ClimateDecider. Consumidas por: Light, Irrigation, Ventilator, AirConditioner.
  *
- * Fase 2 · Responsável: Celso · Revisor: Fredson
  */
 public abstract class OrderMessage {
 }

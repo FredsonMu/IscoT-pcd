@@ -3,6 +3,18 @@ package iscot.common;
 /**
  * SensorMessage — classe-mãe (abstrata) das leituras enviadas pelos sensores.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C1 · feature/mensagens-base
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        SIM (fase 2). Merge HOJE, ter 3 nov.
+ *   No dia 6:     Classe-mãe da LightSensorMessage que o LightSensor imprime no dia 6.
+ *   Depende de:   Message.
+ *   Liga-se a:    Estendida por LightSensorMessage, HumiditySensorMessage, TemperatureSensorMessage.
+ *   Código base:  getType() devolve Type.SENSOR (enum do professor).
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Apresentação: "sensores: clientes ativos, que leem dados do ambiente"; o sensor de
  *   luminosidade "envia para tratamento no servidor mensagens da classe
@@ -27,7 +39,6 @@ package iscot.common;
  *   Criadas por: LightSensor, HumiditySensor, TemperatureSensor.
  *   Consumidas por: LightingDecider, IrrigationDecider, ClimateDecider.
  *
- * Fase 2 · Responsável: Celso · Revisor: Fredson
  */
 public abstract class SensorMessage {
 }

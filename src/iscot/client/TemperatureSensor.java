@@ -3,6 +3,18 @@ package iscot.client;
 /**
  * TemperatureSensor — programa do sensor de temperatura.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       F8 · feature/clima
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        NÃO. Fase 4.
+ *   No dia 6:     Nada.
+ *   Depende de:   C5, F6.
+ *   Liga-se a:    Envia para o ClimateDecider.
+ *   Código base:  Molde: HumiditySensor; usa SensorControl.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Enunciado 1.2: "se o termómetro deteta a ultrapassagem de dada temperatura,
  *   espoleta a ligação de um ar condicionado". A apresentação mostra um sensor de
@@ -18,7 +30,6 @@ package iscot.client;
  *   Usa: SensorControl, BrokerConnection, TemperatureSensorMessage.
  *   Do outro lado: ClimateDecider.
  *
- * Prioridade 3 (automação de clima) · Responsável: Fredson · Revisor: Celso
  */
 public class TemperatureSensor {
 }

@@ -2,6 +2,18 @@ package iscot.sync;
 
 /**
  * ModifiedCountdownLatch — contador que faz uma thread esperar até N confirmações
+ *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       A1 · feature/latch-celso e feature/latch-fredson
+ *   Responsável:  os dois (cada um escreve a sua versão; comparam e fica a melhor)   ·   Revisor: o outro
+ *   Dia 6:        NÃO. Fase 5.
+ *   No dia 6:     Nada.
+ *   Depende de:   —
+ *   Liga-se a:    Criado e esperado pelo TopicDispatcher; descontado via Topic.ack.
+ *   Código base:  API imposta pelo enunciado.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
  * chegarem, ou até passar um tempo limite.
  *
  * OBJETIVO NO ENUNCIADO
@@ -67,7 +79,6 @@ package iscot.sync;
  *     deve voltar ao fim de ~200 ms com count 0.
  *   - Latch(0), await(5000): deve voltar imediatamente.
  *
- * Fase 5 · Escrito pelos DOIS em separado e depois comparado (é matéria de exame).
  */
 public class ModifiedCountdownLatch {
 }

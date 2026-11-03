@@ -3,6 +3,18 @@ package iscot.common;
 /**
  * AreaIrrigationOrderMessage — ordem para a rega de uma área.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C5 · feature/mensagens-outras
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        OPCIONAL no dia 6.
+ *   No dia 6:     Nada obrigatório.
+ *   Depende de:   C1.
+ *   Liga-se a:    Criada pelo IrrigationDecider; consumida pela Irrigation.
+ *   Código base:  Para o IrrigationIcon do professor.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Enunciado 1.2: o decisor da rega "define uma ordem de irrigação, e os atuadores
  *   ligam a irrigação do jardim até o nível desejado de humidade ser atingido".
@@ -21,7 +33,6 @@ package iscot.common;
  * LIGAÇÕES
  *   Criada por: IrrigationDecider. Consumida por: Irrigation.
  *
- * Fase 2 · Responsável: Celso · Revisor: Fredson
  */
 public class AreaIrrigationOrderMessage {
 }

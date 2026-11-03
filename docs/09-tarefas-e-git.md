@@ -131,6 +131,69 @@ sex 6 nov          apresentação
 ```
 O mínimo para dia 6 é C1–C4 + F1–F3 + F5. C5 e F4 só se sobrar tempo.
 
+## As notas dentro de cada classe
+
+Cada uma das nossas classes (e os dois exemplos do professor, `HumiditySensor` e `Ventilator`) tem, logo no topo do comentário, um bloco **PLANO** com o mesmo formato:
+
+```text
+PLANO
+  Tarefa:       F2 · feature/light          ← o código da tarefa nestas tabelas e a branch
+  Responsável:  Fredson   ·   Revisor: Celso
+  Dia 6:        SIM (fase 1). Merge até qua 4 nov. ...   ← SIM / NÃO / OPCIONAL / SÓ A CLASSE
+  No dia 6:     o que esta classe mostra na apresentação
+  Depende de:   que tarefas têm de estar na main antes
+  Liga-se a:    que classes a usam ou são usadas por ela
+  Código base:  o que vem do professor ou o que mudou por causa dele
+```
+
+Por baixo do PLANO continuam as notas de sempre: o objetivo no enunciado, o que implementar, concorrência, alternativas, dúvidas e como testar. Antes de começar uma tarefa, ler a classe inteira.
+
+**Classes que entram no dia 6:** `Message`, `SensorMessage`, `OrderMessage`, `AckMessage` (só compilar), `LightSensorMessage`, `AreaLightingOrderMessage`, `Topic`, `TopicManager`, `ActionHistory`, `Light`, `LightSensor`, `IscotTests` (grupo 1). **Opcionais no dia 6:** as outras mensagens (C5) e a fase 1 do `Ventilator` (F4). Todas as outras dizem `Dia 6: NÃO`.
+
+## Os ficheiros do professor: o que são e como os usamos
+
+Estes ficheiros **não têm notas nossas e não se alteram** (são o código base que o professor vai reconhecer). Exceção: `HumiditySensor` e `Ventilator`, que são exemplos com `TODO` para completarmos.
+
+| Ficheiro | O que é | Como o usamos | Atenção |
+|---|---|---|---|
+| `enums/Areas` | as 5 áreas: `Kitchen, WC, LivingRoom, BedRoom, Garden` | campo `area` de todas as mensagens; chave dos tópicos; 3.º argumento de todos os programas | escreve-se exatamente assim nos argumentos (`LivingRoom`, não `sala`) |
+| `enums/Type` | `SENSOR, DECIDER, ACTUATOR, DWC` | `getType()` das mensagens; tipo na `RegistrationMessage` | `DWC` "pode ser ignorado": o servidor recusa-o |
+| `enums/AirConditioningMode` | `Ventilação, Frio, Aquecimento, Desligado` | campo `mode` da `AreaClimateOrderMessage` | — |
+| `client/gui/ComponentState` | base de todos os ícones: `setAtivo` / `isAtivo` | não se usa diretamente | `setAtivo` já usa `invokeLater`: pode ser chamado de qualquer thread |
+| `client/gui/LightIcon` | lâmpada: `setLigada(boolean)` | `Light` | intensidade: não usamos |
+| `client/gui/VentilatorIcon` | ventilador: `setLigado(boolean)` | `Ventilator` | — |
+| `client/gui/ACIcon` | ar condicionado: `setModo(AirConditioningMode)` | `AirConditioner` | `setModo` muda um campo fora do `invokeLater`; temperatura: não usamos |
+| `client/gui/IrrigationIcon` | rega: `setAtiva(boolean)` | `Irrigation` | zona e duração: não usamos |
+| `client/gui/SensorControl` | slider com nome, unidade, mínimo, máximo, passo, valor inicial e um callback | `LightSensor`, `HumiditySensor`, `TemperatureSensor` | o callback só é chamado quando o utilizador **larga** o slider, e corre na thread do Swing |
+| `client/HumiditySensor` | exemplo de sensor, com `TODO` | molde dos sensores; completamos os `TODO` na tarefa C9 | tem um `import` de `LightIcon` que não usa |
+| `client/Ventilator` | exemplo de atuador, com `TODO` (incluindo o da fase 1) | molde dos atuadores; completamos os `TODO` em F4 e F8 | tirar o `Thread.sleep(5000)` de demonstração quando a fase 1 estiver feita |
+
+## Como as peças do dia 6 se ligam
+
+Nada disto usa rede nem threads nossas. São três programas que se correm em separado no Eclipse.
+
+```mermaid
+flowchart LR
+  subgraph "04 Lampada LivingRoom (fase 1)"
+    L["Light (F2)"] --> LI["LightIcon (professor)"]
+    L --> AH["ActionHistory (F1)"]
+    L -- "cria localmente" --> ALO["AreaLightingOrderMessage (C2)"]
+  end
+  subgraph "02 Sensor luz LivingRoom (fase 1)"
+    LS["LightSensor (F3)"] --> SC["SensorControl (professor)"]
+    SC -- "callback ao largar o slider" --> LSM["LightSensorMessage (C2)"]
+  end
+  subgraph "12 Testes (fase 2)"
+    IT["IscotTests grupo 1 (F5)"] --> TM["TopicManager (C4)"]
+    TM --> TP["Topic LivingRoom (C3)"]
+    IT -- "publish / removeHead" --> TP
+  end
+  ALO --> M["Message, OrderMessage, SensorMessage (C1)"]
+  LSM --> M
+```
+
+O que liga tudo é o pacote `common`: as mensagens do Celso (C1 e C2) são usadas pela lâmpada e pelo sensor do Fredson e pelos testes. Por isso **C1 e C2 têm de entrar na `main` primeiro**, hoje.
+
 ## O que mostrar no dia 6 com estas tarefas
 
 1. `04 Lampada LivingRoom` (duas vezes): a lâmpada acende e apaga com uma ordem criada localmente, e o histórico mostra `Lâmpada ligada - HH:MM:SS`. É exatamente o que o professor pede no `TODO` da fase 1.

@@ -3,6 +3,18 @@ package iscot.server;
 /**
  * ClientHandler — a thread dedicada que o servidor cria para cada cliente ligado.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C7 (registo) e C8 (mensagens) · feature/server, feature/client-handler
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        NÃO. Registo na fase 3 (10–13 nov); mensagens na fase 4.
+ *   No dia 6:     Nada.
+ *   Depende de:   C3, C4, C6.
+ *   Liga-se a:    Criado pelo Server; fala com a BrokerConnection do cliente; publica no Topic.
+ *   Código base:  Valida o Type e a Areas do professor no registo; recusa null e DWC.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Enunciado 1.1: "Cada cliente deve ter uma thread dedicada no servidor, que gere as
  *   interações com ele, incluindo (mas não limitado a) envio e receção de mensagens."
@@ -46,7 +58,6 @@ package iscot.server;
  *   - implements Runnable: equivalente. Thread pool: proibido e contraria "thread
  *     dedicada". Leitora + escritora por cliente: ver TopicDispatcher, opção B.
  *
- * Fase 3 (registo) e 4 (mensagens) · Responsável: Celso · Revisor: Fredson
  */
 public class ClientHandler {
 }

@@ -2,6 +2,18 @@ package iscot.common;
 
 /**
  * AreaClimateOrderMessage — ordem para a climatização de uma área (ventilador e ar
+ *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C5 · feature/mensagens-outras
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        OPCIONAL no dia 6. Necessária se o Fredson fizer a fase 1 do Ventilator (F4).
+ *   No dia 6:     Se houver tempo: o Ventilator cria-a localmente e liga o VentilatorIcon.
+ *   Depende de:   C1.
+ *   Liga-se a:    Criada pelo ClimateDecider; consumida pelo Ventilator e AirConditioner.
+ *   Código base:  Usa o enum AirConditioningMode do professor.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
  * condicionado).
  *
  * OBJETIVO
@@ -28,7 +40,6 @@ package iscot.common;
  * LIGAÇÕES
  *   Criada por: ClimateDecider. Consumida por: Ventilator, AirConditioner.
  *
- * Fase 2 · Responsável: Celso · Revisor: Fredson
  */
 public class AreaClimateOrderMessage {
 }

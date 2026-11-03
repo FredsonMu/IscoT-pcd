@@ -3,6 +3,18 @@ package iscot.client;
 /**
  * ClimateDecider — programa do decisor de climatização.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       F8 · feature/clima
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        NÃO. Fase 4.
+ *   No dia 6:     Nada.
+ *   Depende de:   C5, F6.
+ *   Liga-se a:    Recebe do TemperatureSensor; envia para Ventilator e AirConditioner.
+ *   Código base:  Modos do AirConditioningMode do professor.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Enunciado 1.2: "se o termómetro deteta a ultrapassagem de dada temperatura,
  *   espoleta a ligação de um ar condicionado".
@@ -18,7 +30,6 @@ package iscot.client;
  * LIGAÇÕES
  *   Recebe de: TemperatureSensor. Envia para: Ventilator e AirConditioner.
  *
- * Prioridade 3 (automação de clima) · Responsável: Fredson · Revisor: Celso
  */
 public class ClimateDecider {
 }

@@ -2,6 +2,18 @@ package iscot.server;
 
 /**
  * Topic — a fila FIFO de mensagens de UMA ÁREA da casa e a lista de quem a subscreve.
+ *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       C3 · feature/topic
+ *   Responsável:  Celso   ·   Revisor: Fredson
+ *   Dia 6:        SIM (fase 2). Merge até qua 4 nov. No dia 6 basta: publish, removeHead, snapshot (e waitForHead escrito). setPending/ack/subscribe ficam para a fase 4–5.
+ *   No dia 6:     O IscotTests publica mensagens no Topic da LivingRoom e mostra a fila FIFO com ids 1, 2, 3; removeHead tira a mais antiga.
+ *   Depende de:   C1, C2.
+ *   Liga-se a:    Gerido pelo TopicManager; testado pelo IscotTests (F5); usado pelo ClientHandler e pelo TopicDispatcher depois.
+ *   Código base:  Um tópico por área (Areas do professor), porque o registo só leva tipo e área.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
  * É O PRINCIPAL RECURSO PARTILHADO DO SERVIDOR.
  *
  * OBJETIVO NO ENUNCIADO
@@ -71,7 +83,6 @@ package iscot.server;
  *   Fase 2: publicar 3 LightSensorMessage na LivingRoom: ordem FIFO e ids 1, 2, 3.
  *   Fase 5: 10 threads a publicar 1000 cada: 10 000 mensagens, ids sem repetição.
  *
- * Fase 2 (estrutura) e 5 (latch) · Responsável: Celso · Revisor: Fredson
  */
 public class Topic {
 }

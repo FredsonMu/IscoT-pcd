@@ -3,6 +3,18 @@ package iscot.client;
 /**
  * LightingDecider — programa do decisor de iluminação.
  *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       F7 · feature/luz-rede
+ *   Responsável:  Fredson   ·   Revisor: Celso
+ *   Dia 6:        NÃO. Fase 4.
+ *   No dia 6:     Nada (no dia 6 só se explica a regra dos 500 lux).
+ *   Depende de:   F6 (BrokerConnection), C2.
+ *   Liga-se a:    Recebe do LightSensor; envia para as Light.
+ *   Código base:  Regra dos 500 lux da apresentação do professor.
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * OBJETIVO
  *   Apresentação: "um cliente monitoriza a informação do(s) sensor(es) e toma decisões,
  *   neste caso de acender a(s) luz(es) sempre que a iluminação está abaixo de 500lux";
@@ -33,7 +45,6 @@ package iscot.client;
  * LIGAÇÕES
  *   Recebe de: LightSensor (via servidor). Envia para: Light (via servidor).
  *
- * Prioridade 1 (cenário do professor) · Responsável: Fredson · Revisor: Celso
  */
 public class LightingDecider {
 }

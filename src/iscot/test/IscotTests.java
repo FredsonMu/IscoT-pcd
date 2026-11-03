@@ -2,6 +2,19 @@ package iscot.test;
 
 /**
  * IscotTests — todos os testes que se correm sem rede, num só programa.
+ *
+ * ==================================================================================
+ * PLANO
+ *   Tarefa:       F5 (grupo 1), F9 (grupo 2), C11 (grupo 3) · feature/teste-estrutura, feature/teste-latch, feature/teste-carga
+ *   Responsável:  Fredson (grupos 1 e 2), Celso (grupo 3)   ·   Revisor: o outro
+ *   Dia 6:        SIM, o GRUPO 1 (fase 2). Merge até qui 5 nov. Grupos 2 e 3: fase 5.
+ *   No dia 6:     Lançar "12 Testes": mostra o formato das mensagens, a fila FIFO da LivingRoom com ids 1, 2, 3, consumir a cabeça e os tópicos por área separados. É a demo da fase 2.
+ *   Depende de:   C1–C4.
+ *   Liga-se a:    Usa Topic, TopicManager e as mensagens.
+ *   Código base:  —
+ *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ * ==================================================================================
+ *
  * Um main que corre cada grupo e imprime OK / FALHOU por verificação, e no fim o total.
  *
  * PORQUÊ UM MAIN E NÃO JUNIT
