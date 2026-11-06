@@ -22,37 +22,47 @@ import iscot.enums.Type;
  *
  * ==================================================================================
  * PLANO
- *   Tarefa:       F4 (fase 1) e F8 (rede) · feature/ventilador-fase1, feature/clima
- *   Responsável:  Fredson   ·   Revisor: Celso
- *   Dia 6:        OPCIONAL no dia 6 (F4, só se sobrar tempo, qui 5 nov): a fase 1 que o professor pede no TODO.
- *   No dia 6:     Se houver tempo: cria AreaClimateOrderMessage localmente, liga o VentilatorIcon e escreve no histórico.
- *   Depende de:   C5 (AreaClimateOrderMessage), F1.
- *   Liga-se a:    Fase 4: recebe do ClimateDecider.
- *   Código base:  FICHEIRO DO PROFESSOR: só se mexe nos TODO.
- *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ *   Tarefa:        F4 · feature/ventilator · FREDSON, 4.ª CLASSE A FAZER
+ *   Revisor:       Celso
+ *   Fase:          1 (GUI) e 3 (eventos exemplo na janela)
+ *   Etapa:         3 (seg 9 nov)
+ *   Precisa de:    ENTREGA B do Celso (AreaVentilationOrderEvent); F1; F3 (Light, como guia).
+ *   Regra:         ficheiro do professor: só se mexe nos TODO.
  * ==================================================================================
  *
  * O QUE O PROFESSOR JÁ DÁ
- *   - main com 3 argumentos: endereço, porto, área (ex.: "localhost 8080 LivingRoom").
- *   - Janela com o VentilatorIcon; ao fim de 5 s liga-o (Thread.sleep + setAtivo),
- *     só para mostrar o componente a mudar.
- *   - setAtivo usa SwingUtilities.invokeLater (ComponentState): pode ser chamado de
- *     qualquer thread.
+ *   - main com 3 argumentos: endereço, porto e área.
+ *   - Janela com o VentilatorIcon, que liga ao fim de 5 s, só para mostrar o componente a mudar.
+ *   - A main não é a thread do Swing: é por isso que o Thread.sleep não congela a janela.
  *
- * O QUE NOS FALTA FAZER (os TODO do professor)
- *   - "for first phase: create an appropriate event hardcoded locally and change the
- *     GUI accordingly": É A FASE 1. Criar localmente
- *     new AreaClimateOrderMessage(area, AirConditioningMode.Ventilação), aplicá-la
- *     (ventilator.setLigado(true)) e escrever no histórico "Ventilador ligado - HH:MM:SS";
- *     depois Desligado. Juntar um ActionHistory à janela (BorderLayout.SOUTH).
- *   - "TODO connect to server" / "TODO register with the server":
- *       BrokerConnection + register(Type.ACTUATOR, area).                  [fase 3]
- *   - "TODO: receive and handle messages from server":
- *       startReceiving: se for AreaClimateOrderMessage,
- *       setLigado(mode != Desligado) e histórico.                           [fase 4]
- *   - Tirar o Thread.sleep(5000) de demonstração quando a fase 1 estiver feita.
+ * PASSOS (por esta ordem)
  *
- * Esta é a classe-molde para Light, Irrigation e AirConditioner.
+ *   Passo 1 · Juntar o histórico à janela
+ *     Lógica sugerida: igual à Light: ActionHistory em baixo, antes de mostrar a janela.
+ *     Liga-se a: ActionHistory; Light, Passo 2.
+ *
+ *   Passo 2 · Escrever o que acontece ao receber UMA ordem
+ *     Lógica sugerida: um método que recebe um AreaVentilationOrderEvent, muda o ícone e regista
+ *       "Ventilador ligado" ou "Ventilador desligado". Sem ação se o estado não mudar.
+ *     Porquê: mesma separação da Light, para esta parte se manter na fase 5.
+ *     Liga-se a: AreaVentilationOrderEvent; Light, Passo 3.
+ *
+ *   Passo 3 · Tratar o "TODO: for first phase"
+ *     Lógica sugerida: substituir a demonstração (sleep + setAtivo) por ordens de exemplo criadas
+ *       localmente, com a mesma técnica da Light.
+ *     Porquê: é o TODO do professor; o resultado passa a vir de um evento, não de uma chamada solta.
+ *     Liga-se a: Light, Passo 4.
+ *
+ *   Passo 4 · Confirmar
+ *     O ventilador liga e desliga sozinho, com a hora no histórico.
+ *
+ * O QUE AINDA NÃO SE FAZ
+ *   Os TODO de ligar e registar são da fase 4; receber do servidor é da fase 5. Ficam como estão.
+ *
+ * CONCEITOS E OPÇÕES
+ *   Os mesmos da Light. Usar a mesma opção para gerar a sequência nos dois programas.
+ *
+ * É o molde da Light, do AirConditioner e da Irrigation.
  */
 public class Ventilator {
 

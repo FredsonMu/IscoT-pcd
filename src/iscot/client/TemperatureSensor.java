@@ -1,35 +1,45 @@
 package iscot.client;
 
 /**
- * TemperatureSensor — programa do sensor de temperatura.
+ * TemperatureSensor — programa do termómetro.
  *
  * ==================================================================================
  * PLANO
- *   Tarefa:       F8 · feature/clima
- *   Responsável:  Fredson   ·   Revisor: Celso
- *   Dia 6:        NÃO. Fase 4.
- *   No dia 6:     Nada.
- *   Depende de:   C5, F6.
- *   Liga-se a:    Envia para o ClimateDecider.
- *   Código base:  Molde: HumiditySensor; usa SensorControl.
- *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ *   Tarefa:        F5 · feature/temperature-sensor · FREDSON, 5.ª CLASSE A FAZER
+ *   Revisor:       Celso
+ *   Fase:          1 (GUI) e 3 (gerar eventos, a exibir na consola)
+ *   Etapa:         3 (seg 9 nov)
+ *   Precisa de:    ENTREGA B do Celso (TemperatureSensorEvent); F2 (LightSensor, como guia).
+ *   Molde:         LightSensor.
  * ==================================================================================
  *
- * OBJETIVO
- *   Enunciado 1.2: "se o termómetro deteta a ultrapassagem de dada temperatura,
- *   espoleta a ligação de um ar condicionado". A apresentação mostra um sensor de
- *   temperatura.
+ * PASSOS (por esta ordem)
  *
- * SEGUIR O MOLDE DO PROFESSOR: HumiditySensor
- *   - main(args): endereço, porto, área.
- *   - SensorControl(ícone, "Temperatura - <área>", "ºC", 0, 40, 0.5, 22, callback).
- *   - Fase 1: o callback cria TemperatureSensorMessage(area, valor) e mostra-a.
- *   - Fase 3–4: register(Type.SENSOR, area) e send no callback.
+ *   Passo 1 · Partir do LightSensor
+ *     Lógica sugerida: mesma estrutura; mudam o título, a unidade e o intervalo.
+ *     Porquê: os slides mostram este sensor na figura de GUI, ao lado do de iluminação.
+ *     Liga-se a: LightSensor; launch "02 Sensor temperatura LivingRoom".
  *
- * LIGAÇÕES
- *   Usa: SensorControl, BrokerConnection, TemperatureSensorMessage.
- *   Do outro lado: ClimateDecider.
+ *   Passo 2 · Escolher o intervalo
+ *     Lógica sugerida: ver as opções.
+ *     Liga-se a: SensorControl (marcas do slider).
  *
+ *   Passo 3 · No callback, criar e mostrar o evento
+ *     Lógica sugerida: criar um TemperatureSensorEvent e imprimi-lo.
+ *     Liga-se a: TemperatureSensorEvent.
+ *     Formato: TemperatureSensorEvent [temperature=27.0, area=LivingRoom, getType()=SENSOR]
+ *
+ *   Passo 4 · Confirmar
+ *     Cada largada do slider imprime uma linha com o valor da etiqueta.
+ *
+ * CONCEITOS DA UC A USAR
+ *   Os mesmos do LightSensor: callback, lambda, thread do Swing.
+ *
+ * OPÇÕES PARA COMEÇAR (escolher e saber dizer porquê)
+ *   Intervalo do SensorControl:
+ *     A) 0 a 50 com passo 1. As marcas do slider coincidem com os graus. [sugestão]
+ *     B) Começar abaixo de zero (ex.: -10 a 50). Mais realista, mas as marcas mostram o número do
+ *        passo e deixam de coincidir com os graus (a marca 0 representa -10).
  */
 public class TemperatureSensor {
 }
