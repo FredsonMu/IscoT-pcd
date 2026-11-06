@@ -1,5 +1,7 @@
 package iscot.common;
 
+import iscot.enums.Areas;
+
 /**
  * LightSensorEvent — leitura de luminosidade, em lux. É O MODELO DAS OUTRAS LEITURAS.
  *
@@ -54,5 +56,24 @@ package iscot.common;
  * NAS FASES SEGUINTES
  *   Fase 6: é consumida por um decisor de iluminação, que acende abaixo de 500 lux.
  */
-public class LightSensorEvent {
+public class LightSensorEvent extends SensorEvent {
+
+    private final double light;
+
+    /** Cria uma leitura de luminosidade em lux. */
+    public LightSensorEvent(Areas area, double light) {
+        super(area);
+        this.light = light;
+    }
+
+    /** Devolve a luminosidade medida em lux. */
+    public double getLight() {
+        return light;
+    }
+
+    /** Fornece a parte variável do texto deste evento. */
+    @Override
+    protected String getEventFields() {
+        return "light=" + light;
+    }
 }

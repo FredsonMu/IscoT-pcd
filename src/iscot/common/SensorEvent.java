@@ -1,5 +1,8 @@
 package iscot.common;
 
+import iscot.enums.Areas;
+import iscot.enums.Type;
+
 /**
  * SensorEvent — classe-mãe, abstrata, das leituras feitas pelos sensores.
  *
@@ -44,5 +47,16 @@ package iscot.common;
  *     B) Aqui, num campo genérico "valor". Menos código, mas o texto do evento deixa de
  *        corresponder ao formato do professor.
  */
-public abstract class SensorEvent {
+public abstract class SensorEvent extends Event {
+
+    /** Cria uma leitura de sensor para a área indicada. */
+    protected SensorEvent(Areas area) {
+        super(area);
+    }
+
+    /** Identifica todas as leituras como eventos de sensor. */
+    @Override
+    public final Type getType() {
+        return Type.SENSOR;
+    }
 }
