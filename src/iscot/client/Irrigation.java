@@ -5,31 +5,47 @@ package iscot.client;
  *
  * ==================================================================================
  * PLANO
- *   Tarefa:       C9 · feature/rega
- *   Responsável:  Celso   ·   Revisor: Fredson
- *   Dia 6:        NÃO. Fase 4.
- *   No dia 6:     Nada.
- *   Depende de:   C5, F1, F6.
- *   Liga-se a:    Recebe do IrrigationDecider.
- *   Código base:  Molde: Ventilator; usa IrrigationIcon.
- *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ *   Tarefa:        C6 · feature/irrigation · CELSO, 15.ª CLASSE A FAZER
+ *   Revisor:       Fredson
+ *   Fase:          1 (GUI) e 3 (eventos exemplo na janela)
+ *   Etapa:         3 (seg 9 nov)
+ *   Precisa de:    C3 (AreaIrrigationOrderEvent); ENTREGA C do Fredson (ActionHistory e Light).
+ *   Molde:         Light; usa IrrigationIcon.
  * ==================================================================================
  *
- * OBJETIVO
- *   Enunciado 1.2: "os atuadores ligam a irrigação do jardim até o nível desejado de
- *   humidade ser atingido". Código base: IrrigationIcon (setAtiva).
+ * PASSOS (por esta ordem)
  *
- * SEGUIR O MOLDE DO PROFESSOR: Ventilator
- *   - main(args): endereço, porto, área (normalmente Garden).
- *   - JFrame "Rega em <área>": IrrigationIcon no CENTER, ActionHistory no SOUTH.
- *   - Fase 1: ordem criada localmente (AreaIrrigationOrderMessage true, depois false).
- *   - Fase 3–4: register(Type.ACTUATOR, area); ao receber AreaIrrigationOrderMessage:
- *       icon.setAtiva(state); history.add(state ? "Rega ligada" : "Rega desligada").
- *   - Zona e duração do IrrigationIcon: não usamos (o enunciado não pede).
+ *   Passo 1 · Ler a Light do Fredson
+ *     Porquê: é o modelo. Ao percebê-la, o Celso também fica preparado para a explicar na apresentação.
+ *     Liga-se a: Light (F3).
  *
- * LIGAÇÕES
- *   Usa: IrrigationIcon, ActionHistory, BrokerConnection, AreaIrrigationOrderMessage.
+ *   Passo 2 · Montar a janela
+ *     Lógica sugerida: a área no título; o IrrigationIcon no centro; o ActionHistory em baixo.
+ *     Liga-se a: IrrigationIcon; ActionHistory; launch "08 Rega Garden".
  *
+ *   Passo 3 · Escrever o que acontece ao receber UMA ordem
+ *     Lógica sugerida: um método que recebe um AreaIrrigationOrderEvent, muda o ícone e regista "Rega
+ *       ligada" ou "Rega desligada". Sem ação se o estado não mudar.
+ *     Porquê: mesma separação da Light, para esta parte se manter na fase 5.
+ *     Liga-se a: AreaIrrigationOrderEvent; Light, Passo 3.
+ *
+ *   Passo 4 · Gerar ordens de exemplo
+ *     Lógica sugerida: usar a mesma técnica combinada no Ponto 0.
+ *     Liga-se a: Light, Passo 4.
+ *
+ *   Passo 5 · Confirmar
+ *     A rega liga e desliga sozinha, com a hora no histórico. Abrir o pull request C6.
+ *
+ * CONCEITOS DA UC A USAR
+ *   Os mesmos da Light: Swing, thread do Swing, separar a origem da ordem do que se faz com ela.
+ *
+ * OPÇÕES PARA COMEÇAR (escolher e saber dizer porquê)
+ *   Zona e duração do IrrigationIcon:
+ *     A) Ignorar. O enunciado não as pede. [sugestão]
+ *     B) Usar, se a ordem as trouxer. Ver as opções em AreaIrrigationOrderEvent.
+ *
+ * ARMADILHA
+ *   Os nomes dos métodos variam entre ícones: setLigada, setLigado, setAtiva, setModo.
  */
 public class Irrigation {
 }

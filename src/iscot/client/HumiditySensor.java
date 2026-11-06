@@ -13,32 +13,46 @@ import iscot.enums.Type;
  *
  * ==================================================================================
  * PLANO
- *   Tarefa:       C9 · feature/rega
- *   Responsável:  Celso   ·   Revisor: Fredson
- *   Dia 6:        NÃO. Fase 4 (automação da rega).
- *   No dia 6:     Nada. (O exemplo do professor já abre a janela; pode mostrar-se como "componente dado".)
- *   Depende de:   C5, F6.
- *   Liga-se a:    Envia para o IrrigationDecider.
- *   Código base:  FICHEIRO DO PROFESSOR: só se mexe nos TODO.
- *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ *   Tarefa:        C5 · feature/sensores-humidade · CELSO, 13.ª CLASSE A FAZER
+ *   Revisor:       Fredson
+ *   Fase:          1 (GUI) e 3 (gerar eventos, a exibir na consola)
+ *   Etapa:         3 (seg 9 nov)
+ *   Precisa de:    C3 (HumiditySensorEvent). Não espera pelo Fredson.
+ *   Regra:         ficheiro do professor: só se mexe nos TODO.
  * ==================================================================================
  *
  * O QUE O PROFESSOR JÁ DÁ
- *   - main com 3 argumentos: endereço, porto, área (Areas.valueOf(args[2]),
- *     ex.: "localhost 8080 Garden"). Se não forem 3, escreve "Invalid arguments!".
+ *   - main com 3 argumentos: endereço, porto e área. Se não forem 3: "Invalid arguments!".
  *   - Janela com um SensorControl de 0 a 100 %, passo 1, valor inicial 50.
- *   - O callback do SensorControl só é chamado quando o utilizador LARGA o slider.
+ *   - O callback do SensorControl, que hoje só escreve "Mudou para:" na consola.
  *
- * O QUE NOS FALTA FAZER (os TODO do professor)
- *   - "TODO connect to the server" / "TODO register with the server":
- *       BrokerConnection + register(Type.SENSOR, area).                   [fase 3]
- *   - "TODO handle change in sensor": no callback,
- *       fase 1: criar new HumiditySensorMessage(area, valor) e imprimi-la;
- *       fase 4: connection.send(new HumiditySensorMessage(area, valor)).
- *   - O ícone "☀" e o import de LightIcon não são usados para humidade: podemos trocar
- *     o ícone (ex.: "💧") ou deixar.
+ * PASSOS (por esta ordem)
  *
- * Esta é a classe-molde para LightSensor e TemperatureSensor.
+ *   Passo 1 · Correr tal como está e perceber cada bloco
+ *     Porquê: é o molde dos outros sensores. O Fredson faz o mesmo no LightSensor.
+ *     Liga-se a: SensorControl; launch "03 Sensor humidade ar LivingRoom".
+ *
+ *   Passo 2 · Tratar o "TODO handle change in sensor"
+ *     Lógica sugerida: no callback, em vez do texto atual, criar um HumiditySensorEvent com o valor e
+ *       a área, e imprimi-lo.
+ *     Porquê: é o pedido da fase 3. Na fase 5, a única diferença será enviar em vez de imprimir.
+ *     Liga-se a: HumiditySensorEvent.
+ *     Formato: HumiditySensorEvent [humidity=72.0, area=LivingRoom, getType()=SENSOR]
+ *
+ *   Passo 3 · Confirmar
+ *     Cada largada do slider imprime uma linha. Opcional: trocar o ícone, que é um sol.
+ *
+ * O QUE AINDA NÃO SE FAZ
+ *   "TODO connect to the server" e "TODO register with the server" são da fase 4. Ficam como estão.
+ *
+ * ESTE SENSOR MEDE O AR
+ *   Enunciado v4: humidade do ar -> ventilação; humidade do solo -> rega. O solo fica no
+ *   GroundMoistureSensor. Por isso a configuração de lançamento usa a LivingRoom.
+ *
+ * CONCEITOS DA UC
+ *   Callback, expressão lambda, thread do Swing (ver as notas do LightSensor).
+ *
+ * É o molde do LightSensor, do TemperatureSensor e do GroundMoistureSensor.
  */
 public class HumiditySensor {
 

@@ -1,50 +1,76 @@
 package iscot.client;
 
 /**
- * ActionHistory — o histórico de ações de um atuador, com a sua lista na janela.
+ * ActionHistory — histórico de ações de um atuador, visível na sua janela.
  *
  * ==================================================================================
  * PLANO
- *   Tarefa:       F1 · feature/action-history
- *   Responsável:  Fredson   ·   Revisor: Celso
- *   Dia 6:        SIM (fase 1). Começar HOJE (não depende de ninguém); merge até qua 4 nov.
- *   No dia 6:     Aparece na janela da Light, por baixo do LightIcon, com "Lâmpada ligada - HH:MM:SS".
- *   Depende de:   — (só Swing).
- *   Liga-se a:    Usado pela Light (dia 6) e depois por Irrigation, Ventilator e AirConditioner.
- *   Código base:  O código base não tem histórico; é nosso. Segue o padrão do ComponentState (invokeLater).
- *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ *   Tarefa:        F1 · feature/action-history · FREDSON, 1.ª CLASSE A FAZER
+ *   Revisor:       Celso
+ *   Fase:          3 (mostrar os eventos nas janelas). Requisito da secção 1.3.
+ *   Etapa:         1 (sáb 7 nov). Começa logo depois do Ponto 0.
+ *   Precisa de:    nada, só Swing. Não espera por ninguém.
+ *   Quem espera:   Light, Ventilator, AirConditioner, Irrigation (Celso).
+ *   Roteiro geral: docs/09-tarefas-e-git.md
  * ==================================================================================
  *
- * OBJETIVO NO ENUNCIADO
- *   Secção 1.3: "A cada ação tomada por um cliente atuador, este adiciona a ação tomada
- *   a um histórico verificável pelo utilizador de todas as ações tomadas pelo atuador
- *   desde a última vez que foi ligado. Por exemplo: (...) 'Lâmpada desligada -
- *   HH:MM:SS'". O código base NÃO traz este componente: é nosso.
+ * O QUE O ENUNCIADO PEDE (1.3)
+ *   Um "histórico verificável pelo utilizador de todas as ações tomadas pelo atuador desde a
+ *   última vez que foi ligado". Exemplo: "Lâmpada desligada - HH:MM:SS".
+ *   O código base não traz este componente: é nosso.
  *
- * PORQUÊ UMA CLASSE PRÓPRIA
- *   Os 4 atuadores (Light, Irrigation, Ventilator, AirConditioner) precisam todos do
- *   mesmo histórico. Uma classe evita repetir o código 4 vezes.
+ * PASSOS (por esta ordem)
  *
- * O QUE VAMOS IMPLEMENTAR
- *   - extends JPanel (para se pôr na janela ao lado do ícone do professor, por exemplo
- *     em BorderLayout.SOUTH), com uma JList sobre um DefaultListModel dentro de um
- *     JScrollPane.
- *   - add(String acao): junta " - " e a hora HH:mm:ss (SimpleDateFormat ou
- *     LocalTime + DateTimeFormatter) e acrescenta a linha.
- *   - Começa vazio em cada arranque ("desde a última vez que foi ligado").
+ *   Passo 1 · Ser um componente que se coloca numa janela
+ *     Lógica sugerida: estender um painel de Swing, tal como os ícones do professor.
+ *     Porquê: assim os atuadores só têm de o adicionar à janela, por baixo do ícone.
+ *     Liga-se a: BorderLayout dos atuadores; ComponentState, como exemplo.
  *
- * CONCORRÊNCIA
- *   add é chamado pela thread recetora, não pela do Swing. O DefaultListModel não é
- *   thread-safe, por isso add faz o trabalho dentro de SwingUtilities.invokeLater
- *   (é o que o professor faz em ComponentState.setAtivo). Assim só a thread do Swing
- *   mexe na lista (confinamento) e não é preciso synchronized.
+ *   Passo 2 · Criar a lista visível
+ *     Lógica sugerida: um modelo com os dados, a lista a mostrá-lo, e uma barra de deslocamento.
+ *     Porquê: "todas as ações" podem não caber; o modelo separa os dados do desenho.
+ *     Liga-se a: aula de Swing; opção A abaixo.
+ *
+ *   Passo 3 · Preparar a formatação da hora
+ *     Lógica sugerida: um formatador HH:mm:ss, guardado uma vez.
+ *     Porquê: o formato vem do enunciado. Ver a escolha entre bibliotecas nas opções.
+ *     Liga-se a: Passo 4; a verificação é à vista (docs/05-testes.md).
+ *
+ *   Passo 4 · Método público para acrescentar uma ação (o contrato)
+ *     Lógica sugerida: recebe só a descrição ("Lâmpada ligada") e devolve nada. Lê a hora logo à
+ *       entrada, compõe a linha "descrição - hora", e só depois a entrega à lista.
+ *     Porquê: quem chama não tem de saber o formato, que fica num só sítio. A hora é a da ação,
+ *       não a do momento em que o Swing conseguiu desenhar.
+ *     Liga-se a: Light (F3), Ventilator (F4), AirConditioner (F6), Irrigation (C6): é o
+ *       contrato combinado no Ponto 0.
+ *
+ *   Passo 5 · Entregar a alteração à thread do Swing
+ *     Lógica sugerida: acrescentar ao modelo dentro de invokeLater.
+ *     Porquê: os atuadores chamam isto a partir da main, e o Swing não é thread-safe. É o mesmo
+ *       que ComponentState.setAtivo faz.
+ *     Liga-se a: ComponentState; fases 5 e seguintes, quando a chamada vier da thread recetora.
+ *
+ *   Passo 6 · Confirmar e entregar
+ *     Numa janela de teste (não vai para o commit), acrescentar umas linhas: aparece a hora certa
+ *     e, com muitas, a barra. Abrir o pull request F1 e avisar o Celso.
+ *
+ * CONCEITOS DA UC A USAR
+ *   Swing e layouts; modelo/vista; EDT e confinamento; reutilização (uma classe, 4 atuadores).
+ *
+ * OPÇÕES PARA COMEÇAR (escolher e saber dizer porquê)
+ *   Como mostrar as linhas:
+ *     A) JList com DefaultListModel. Cada ação é um item. [sugestão]
+ *     B) JTextArea não editável. Mais curto, mas o texto é um bloco único.
+ *   Como obter a hora:
+ *     A) LocalTime e DateTimeFormatter (java.time). Imutáveis e thread-safe. [sugestão]
+ *     B) SimpleDateFormat. Muito usado, mas NÃO é thread-safe.
  *
  * ARMADILHA
- *   "HH:mm:ss": mm são minutos; MM é o mês.
+ *   No padrão da hora, "mm" são minutos e "MM" é o mês.
  *
- * LIGAÇÕES
- *   Usada por: Light, Irrigation, Ventilator, AirConditioner.
- *
+ * PERGUNTA PROVÁVEL
+ *   "Porquê invokeLater, se ainda não têm concorrência?" Porque a main e a thread do Swing já são
+ *   duas threads, mesmo sem servidor.
  */
 public class ActionHistory {
 }

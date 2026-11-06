@@ -1,55 +1,66 @@
 package iscot.test;
 
 /**
- * IscotTests — todos os testes que se correm sem rede, num só programa.
+ * IscotTests — verificação da hierarquia de eventos, sem janelas nem rede.
  *
  * ==================================================================================
  * PLANO
- *   Tarefa:       F5 (grupo 1), F9 (grupo 2), C11 (grupo 3) · feature/teste-estrutura, feature/teste-latch, feature/teste-carga
- *   Responsável:  Fredson (grupos 1 e 2), Celso (grupo 3)   ·   Revisor: o outro
- *   Dia 6:        SIM, o GRUPO 1 (fase 2). Merge até qui 5 nov. Grupos 2 e 3: fase 5.
- *   No dia 6:     Lançar "12 Testes": mostra o formato das mensagens, a fila FIFO da LivingRoom com ids 1, 2, 3, consumir a cabeça e os tópicos por área separados. É a demo da fase 2.
- *   Depende de:   C1–C4.
- *   Liga-se a:    Usa Topic, TopicManager e as mensagens.
- *   Código base:  —
- *   (Lista completa de tarefas e passo a passo no Git: docs/09-tarefas-e-git.md)
+ *   Tarefa:        F7 · feature/testes-eventos · FREDSON, 7.ª CLASSE A FAZER
+ *   Revisor:       Celso
+ *   Fase:          2 (criação da hierarquia de eventos)
+ *   Etapa:         3 (seg 9 nov). Corrida em conjunto no Ponto 2.
+ *   Precisa de:    ENTREGAS A e B do Celso (C1 a C4). Os passos 1 e 2 podem começar logo com os
+ *                  eventos-modelo.
  * ==================================================================================
  *
- * Um main que corre cada grupo e imprime OK / FALHOU por verificação, e no fim o total.
+ * PARA QUE SERVE
+ *   Mostra numa só execução toda a hierarquia a funcionar, ao contrário das janelas. Regra do grupo:
+ *   quem escreve o teste não escreveu a classe.
  *
- * PORQUÊ UM MAIN E NÃO JUNIT
- *   Não obriga a configurar bibliotecas e corre-se como qualquer programa. JUnit vem com
- *   o Eclipse e é melhor se os testes crescerem; decidir em conjunto.
+ * PASSOS (por esta ordem)
  *
- * REGRA
- *   Quem escreve o teste de uma classe é quem NÃO a escreveu.
+ *   Passo 1 · Criar a ferramenta de verificação
+ *     Lógica sugerida: um método auxiliar que compara o esperado com o obtido, escreve OK ou FALHOU e
+ *       conta falhas.
+ *     Porquê: todos os passos seguintes o usam, e a saída fica boa para mostrar na apresentação.
  *
- * ------------------------------------------------------------------------------------
- * GRUPO 1 · Mensagens e estrutura de tópicos (fase 2, sem threads) · escreve: Fredson
- *   1. Formato do professor:
- *      new LightSensorMessage(Areas.LivingRoom, 320).toString() ==
- *      "LightSensorMessage [light=320.0, area=LivingRoom, getType()=SENSOR]";
- *      new AreaLightingOrderMessage(Areas.LivingRoom, true).getType() == Type.DECIDER.
- *   2. FIFO: publicar A, B, C no Topic da LivingRoom; a cabeça é A; depois de
- *      removeHead é B.
- *   3. Ids: as mensagens recebem messageId 1, 2, 3 por ordem de publicação.
- *   4. Tópicos separados: publicar na LivingRoom não aparece no Garden.
- *   5. TopicManager: get(LivingRoom) duas vezes devolve o MESMO objeto Topic.
+ *   Passo 2 · Verificar o formato do texto
+ *     Lógica sugerida: criar cada um dos 9 eventos e comparar com o texto das notas da sua classe.
+ *     Porquê: os dois formatos dos slides são os mais importantes. Se falhar, avisar o Celso.
+ *     Liga-se a: todos os eventos; Event, Passo 4.
  *
- * ------------------------------------------------------------------------------------
- * GRUPO 2 · ModifiedCountdownLatch (fase 5) · escrevem: os dois
- *   1. Timeout: Latch(3), 2 countdowns, await(800) -> ~800 ms, getCount() == 1.
- *   2. Libertação: Latch(2); duas threads dormem 200 ms e fazem countdown;
- *      await(5000) -> ~200 ms, getCount() == 0.
- *   3. Zero: Latch(0), await(5000) -> volta logo.
- *   4. Acks a mais: Latch(1), 3 countdowns -> count fica 0.
- *   5. Interrupção: await(10000) interrompido ao fim de 100 ms -> InterruptedException.
+ *   Passo 3 · Verificar o tipo
+ *     Lógica sugerida: 4 leituras dizem SENSOR, 4 ordens dizem DECIDER; o RegistrationEvent diz o tipo
+ *       que recebeu.
+ *     Liga-se a: SensorEvent, HighLevelOrderEvent, RegistrationEvent.
  *
- * ------------------------------------------------------------------------------------
- * GRUPO 3 · Carga (fase 5) · escreve: Celso
- *   - 10 threads publicam 1000 mensagens cada no mesmo Topic; join() em todas.
- *   - Verificar: exatamente 10 000 mensagens e nenhum messageId repetido.
- *   - Experiência: tirar temporariamente o synchronized do publish e ver a falhar.
+ *   Passo 4 · Verificar a hierarquia e a área
+ *     Lógica sugerida: guardar os eventos numa coleção de Event, percorrê-la e testar com instanceof.
+ *     Porquê: percorrer sem saber a classe concreta é polimorfismo; é uma boa resposta na apresentação.
+ *     Liga-se a: Event, SensorEvent, HighLevelOrderEvent.
+ *
+ *   Passo 5 · Verificar a serialização
+ *     Lógica sugerida: escrever cada evento num stream de objetos em memória, voltar a lê-lo e comparar
+ *       o texto.
+ *     Porquê: prepara a fase 5 sem precisar de rede.
+ *     Liga-se a: Event, Passo 1.
+ *
+ *   Passo 6 · Resumo
+ *     Escrever quantas verificações passaram e falharam. "09 Testes" fica todo OK.
+ *
+ * CONCEITOS DA UC A USAR
+ *   Polimorfismo; instanceof; streams de objetos.
+ *
+ * OPÇÕES PARA COMEÇAR (escolher e saber dizer porquê)
+ *   Como organizar os testes:
+ *     A) Um main que escreve OK ou FALHOU. Corre sem configurar nada. [sugestão]
+ *     B) JUnit, que já vem no Eclipse. Melhores relatórios, mas exige alterar o Build Path.
+ *   Como comparar os textos:
+ *     A) O método auxiliar do Passo 1. [sugestão]
+ *     B) A palavra-chave assert. Atenção: vem desligada por defeito e exige a opção -ea.
+ *
+ * NA APRESENTAÇÃO
+ *   É a prova da fase 2: lançar "09 Testes" e mostrar a consola.
  */
 public class IscotTests {
 }

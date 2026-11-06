@@ -1,56 +1,212 @@
-# 09 · Tarefas por pessoa e como trabalhar no GitHub
+# 09 · Roteiro de trabalho, tarefas e GitHub
 
-Este é o documento de trabalho do dia a dia: **que classe faz cada um, o que ela é, o que exige, quando está pronta, e em que branch se faz.** As explicações completas de cada classe estão no comentário no topo do próprio ficheiro.
+O documento de trabalho do dia a dia: **por onde cada um começa, o que tem de entregar ao outro, o que se faz em separado e o que se faz em conjunto.** Os passos de cada classe estão no comentário no topo dela. **Ler a classe inteira antes de começar.**
+
+## Resumo: por onde começar
+
+| | Primeira classe | Depois | O que espera do outro |
+|---|---|---|---|
+| **Celso** | `Event` | os outros eventos, depois humidade e rega | só a `Light` e o `ActionHistory`, para a `Irrigation` |
+| **Fredson** | `ActionHistory` | sensores e atuadores | os eventos-modelo, e depois os restantes |
+
+## O roteiro, etapa a etapa
+
+```mermaid
+flowchart TD
+  P0["PONTO 0 · juntos<br/>preparar e combinar"]
+  P0 --> C1["Celso · C1<br/>Event, SensorEvent, HighLevelOrderEvent"]
+  P0 --> F1["Fredson · F1<br/>ActionHistory"]
+  C1 --> C2["Celso · C2<br/>LightSensorEvent, AreaLightingOrderEvent"]
+  C2 -- "ENTREGA A" --> F2["Fredson · F2<br/>LightSensor"]
+  F1 --> F3["Fredson · F3<br/>Light"]
+  C2 -- "ENTREGA A" --> F3
+  C2 --> C3["Celso · C3<br/>outras 3 leituras e 3 ordens"]
+  C3 --> C4["Celso · C4<br/>RegistrationEvent"]
+  F2 --> P1["PONTO 1 · juntos<br/>primeira demo"]
+  F3 --> P1
+  C4 --> P1
+  P1 -- "ENTREGA B (C3 e C4)" --> F456["Fredson · F4, F5, F6, F7<br/>Ventilator, TemperatureSensor,<br/>AirConditioner, IscotTests"]
+  P1 --> C5["Celso · C5<br/>HumiditySensor, GroundMoistureSensor"]
+  F3 -- "ENTREGA C" --> C6["Celso · C6<br/>Irrigation"]
+  C5 --> C6
+  F456 --> P2["PONTO 2 · juntos<br/>tudo a correr, ensaio, tag"]
+  C6 --> P2
+```
+
+### Ponto 0 · Juntos, antes de começar (sex 6 nov, cerca de 30 min)
+
+Trabalho conjunto, numa chamada:
+
+1. **Preparar:** clonar a `main` nos dois PCs; confirmar que o projeto compila; correr o `HumiditySensor` e o `Ventilator` do professor.
+2. **Combinar os contratos**, para cada um poder escrever a sua parte sem esperar pelo outro:
+
+| Contrato | Quem o cumpre | Quem o usa | O que têm de combinar |
+|---|---|---|---|
+| Criar eventos | Celso | Fredson | ordem no construtor (sugestão: primeiro a área, depois o valor) |
+| Consultar eventos | Celso | Fredson | nome dos métodos de consulta (área, valor, estado, modo) |
+| Texto dos eventos | Celso | Fredson (testes) | os formatos de [02-arquitetura](02-arquitetura.md) |
+| Registar uma ação | Fredson | Celso | o nome do método do `ActionHistory`, que só recebe a descrição |
+| Forma das janelas | os dois | os dois | ícone ao centro, histórico em baixo; copiar o molde em cada sensor, ou criar uma classe comum |
+| Ordens de exemplo | os dois | os dois | que técnica usar: pausas na `main`, `Timer` ou botões (ver as notas da `Light`) |
+
+3. **Registar** o que ficou combinado em [03-decisoes](03-decisoes.md).
+
+### Etapa 1 · Em separado (sáb 7 nov)
+
+| Celso | Fredson |
+|---|---|
+| 1. `Event` | 1. `ActionHistory` |
+| 2. `SensorEvent` | Se sobrar tempo: passos 1 a 3 do `LightSensor` (não dependem de eventos) |
+| 3. `HighLevelOrderEvent` → **pull request C1** | |
+| 4. `LightSensorEvent` | |
+| 5. `AreaLightingOrderEvent` → **pull request C2** = **ENTREGA A** | |
+
+São trabalhos independentes: ninguém fica à espera do outro. O Fredson revê C1 e C2; o Celso revê F1.
+
+### Etapa 2 · Em separado, depois da Entrega A (dom 8 nov)
+
+| Celso | Fredson |
+|---|---|
+| 6 a 11. As outras 3 leituras e 3 ordens → **pull request C3** = **ENTREGA B** | 2. `LightSensor` → **pull request F2** |
+| 12. `RegistrationEvent` → **pull request C4** | 3. `Light` → **pull request F3** = **ENTREGA C** |
+
+### Ponto 1 · Juntos, primeira demo (dom 8 nov, à noite, cerca de 45 min)
+
+- [ ] `git pull` da `main` nos dois PCs; compila.
+- [ ] `01 Sensor luz`: o slider imprime exatamente o texto dos slides.
+- [ ] `05 Lampada`, duas vezes: as lâmpadas acendem e apagam, com hora.
+- [ ] **O Celso explica a `Light`, e o Fredson explica a hierarquia.**
+- [ ] Rever os contratos: algo teve de mudar? O que aprendemos que afeta a Etapa 3?
+
+Se isto falhar, corrigir antes de avançar: é o modelo de todas as outras janelas.
+
+### Etapa 3 · Em separado (seg 9 nov)
+
+| Celso | Fredson |
+|---|---|
+| 13. `HumiditySensor` | 4. `Ventilator` |
+| 14. `GroundMoistureSensor` → **pull request C5** | 5. `TemperatureSensor` |
+| 15. `Irrigation` → **pull request C6** | 6. `AirConditioner` |
+| | 7. `IscotTests` |
+
+### Ponto 2 · Juntos, antes da apresentação (seg 9 nov, à noite, cerca de 1 h)
+
+- [ ] `09 Testes` todo OK. Se uma verificação falhar, corrigem em conjunto.
+- [ ] Todas as caixas de [05-testes](05-testes.md), nos dois PCs.
+- [ ] Cada um explica duas classes do outro.
+- [ ] Ensaio cronometrado do guião de [08-apresentacao-intermedia](08-apresentacao-intermedia.md).
+- [ ] Tag: `git tag entrega-intermedia` e `git push --tags`.
+
+## As três entregas entre vocês
+
+Uma entrega só conta quando o pull request está **na `main`** e o outro foi avisado.
+
+| Entrega | De → para | O que entrega | Fica desbloqueado | Até |
+|---|---|---|---|---|
+| **A** | Celso → Fredson | C1 e C2: base e eventos-modelo | `LightSensor`, `Light` | sáb 7 |
+| **B** | Celso → Fredson | C3 e C4: restantes eventos | `Ventilator`, `TemperatureSensor`, `AirConditioner`, `IscotTests` completo | dom 8 |
+| **C** | Fredson → Celso | F1 e F3: `ActionHistory` e `Light` | `Irrigation` | dom 8 |
+
+**Se uma entrega atrasar:** quem espera não fica parado. O Fredson pode fazer os passos que não precisam de eventos (janelas, ícones, histórico). O Celso pode fazer o `HumiditySensor` e o `GroundMoistureSensor`, que só dependem dos seus próprios eventos.
+
+## Tarefas
+
+### Celso: eventos, humidade e rega
+
+| # | Branch | Classes, por ordem | Pronta quando |
+|---|---|---|---|
+| C1 | `feature/eventos-base` | `Event`, `SensorEvent`, `HighLevelOrderEvent` | compila; as filhas conseguem estender |
+| C2 | `feature/eventos-modelo` | `LightSensorEvent`, `AreaLightingOrderEvent` | texto igual ao dos slides |
+| C3 | `feature/eventos-restantes` | `TemperatureSensorEvent`, `HumiditySensorEvent`, `GroundMoistureSensorEvent`, `AreaVentilationOrderEvent`, `AreaTemperatureOrderEvent`, `AreaIrrigationOrderEvent` | texto no formato certo |
+| C4 | `feature/evento-registo` | `RegistrationEvent` | texto no formato certo |
+| C5 | `feature/sensores-humidade` | `HumiditySensor` (TODO), `GroundMoistureSensor` | o slider imprime o evento |
+| C6 | `feature/irrigation` | `Irrigation` | liga e desliga, com histórico |
+
+### Fredson: histórico, luz, ventilador, temperatura e ar condicionado
+
+| # | Branch | Classe | Pronta quando |
+|---|---|---|---|
+| F1 | `feature/action-history` | `ActionHistory` | mostra `Lâmpada ligada - 21:43:05` |
+| F2 | `feature/light-sensor` | `LightSensor` | o slider imprime o evento |
+| F3 | `feature/light` | `Light` | acende e apaga, com histórico |
+| F4 | `feature/ventilator` | `Ventilator` (TODO) | liga e desliga, com histórico |
+| F5 | `feature/temperature-sensor` | `TemperatureSensor` | o slider imprime o evento |
+| F6 | `feature/air-conditioner` | `AirConditioner` | ventilação ignorada em modo `Frio` |
+| F7 | `feature/testes-eventos` | `IscotTests` | tudo OK |
+
+### Outras fases
+
+Depois da entrega intermédia: ver [06-plano](06-plano.md). A divisão será feita nessa altura.
+
+## As notas dentro de cada classe
+
+```text
+PLANO
+  Tarefa:      F3 · feature/light · FREDSON, 3.ª CLASSE A FAZER
+  Revisor, Fase, Etapa
+  Precisa de:  o que tem de estar pronto antes (e de quem)
+  Quem espera: quem fica à espera desta classe
+
+PASSOS (por esta ordem)
+  Passo N · O que fazer
+    Lógica sugerida:  como pensar o problema, sem código
+    Porquê:           a razão, para estudar e saber explicar
+    Liga-se a:        as outras partes do nosso código
+
+CONCEITOS DA UC A USAR, OPÇÕES PARA COMEÇAR, ARMADILHAS, NA APRESENTAÇÃO
+```
+
+As notas dão uma lógica sugerida e **não dão o código**: é um ponto de partida para ler, estudar e perceber a ligação com o resto. Quem implementa pesquisa, escolhe e tem de saber dizer porquê. **[sugestão]** é só isso. Se a escolha afetar o outro, registar em [03-decisoes](03-decisoes.md).
 
 ## Regras de ouro
 
-1. **Uma tarefa = uma branch = um pull request.** Uma tarefa é uma linha das tabelas abaixo (uma classe, ou um grupo pequeno de classes que só fazem sentido juntas).
+1. **Uma tarefa = uma branch = um pull request.**
 2. **Ninguém faz push para a `main`.** Tudo entra por pull request, revisto pelo outro.
 3. **Quem revê tem de conseguir explicar o código.** Se não consegue, pergunta no pull request antes de aprovar.
 4. **Antes de começar e antes de abrir o pull request: `git pull` da `main`.**
 5. **Não mexer nos ficheiros do professor** (`iscot.enums`, `iscot.client.gui`), exceto os `TODO` de `HumiditySensor` e `Ventilator`.
-6. **Não fazer o que não foi pedido.** Opcionais (marcados abaixo) só depois de o obrigatório estar feito.
+6. **Não fazer o que não foi pedido.** Nesta entrega não há servidor nem threads nossas.
 
 ## Passo a passo de uma tarefa
 
-Exemplo: o Celso vai fazer o `Topic`.
+Exemplo: o Fredson vai fazer a `Light`.
 
 ### 1. Atualizar a `main` e criar a branch
 ```bash
 git switch main
 git pull
-git switch -c feature/topic
+git switch -c feature/light
 ```
-No Eclipse: botão direito no projeto › **Team › Pull**; depois **Team › Switch To › New Branch…**, nome `feature/topic`, com "Check out new branch" marcado.
+No Eclipse: botão direito no projeto › **Team › Pull**; depois **Team › Switch To › New Branch…**, nome `feature/light`, com "Check out new branch" marcado.
 
 ### 2. Escrever o código
-- Ler o comentário do topo da classe (diz o que implementar e porquê).
-- Escrever, compilar, correr o teste correspondente.
+- Ler o comentário do topo da classe.
+- Escrever, compilar, correr a configuração correspondente em `launch/`.
 - Pode haver vários commits na branch, pequenos:
 ```bash
-git add src/iscot/server/Topic.java
-git commit -m "Topic: fila FIFO com publish, waitForHead e removeHead"
+git add src/iscot/client/Light.java
+git commit -m "Light: aplica ordens exemplo ao ícone e ao histórico"
 ```
 No Eclipse: vista **Git Staging** (Window › Show View › Other › Git › Git Staging): arrastar o ficheiro para "Staged Changes", escrever a mensagem, **Commit**.
 
-Mensagens de commit: `Classe: o que faz`, no presente, em português. Ex.: `LightSensorMessage: campos e toString no formato do professor`.
+Mensagens de commit: `Classe: o que faz`, no presente, em português.
 
 ### 3. Enviar a branch para o GitHub
 ```bash
-git push -u origin feature/topic
+git push -u origin feature/light
 ```
-No Eclipse: **Commit and Push** na vista Git Staging, ou **Team › Push Branch 'feature/topic'**.
+No Eclipse: **Commit and Push** na vista Git Staging, ou **Team › Push Branch 'feature/light'**.
 
 ### 4. Abrir o pull request
 No GitHub aparece "**Compare & pull request**". Base: `main`. Preencher:
 - **Título:** o mesmo estilo dos commits.
-- **Descrição:** o que faz; como testar (ex.: "correr `12 Testes`, grupo 1"); dúvidas.
+- **Descrição:** o que faz; como testar (ex.: "correr `05 Lampada LivingRoom`"); opção escolhida; dúvidas.
 - **Reviewers:** o outro.
 
 ### 5. Rever (o outro)
 ```bash
 git fetch
-git switch feature/topic
+git switch feature/light
 ```
 - Ler o código no separador **Files changed** do pull request, comentar linhas.
 - Correr no Eclipse o que a descrição diz.
@@ -66,7 +222,7 @@ git pull
 
 ### Se a `main` mudou enquanto trabalhavas
 ```bash
-git switch feature/topic
+git switch feature/light
 git merge main
 ```
 Se houver conflito, o Git marca o ficheiro com `<<<<<<<`, `=======`, `>>>>>>>`. Escolher o que fica, apagar as marcas, compilar, `git add` e `git commit`. Em caso de dúvida, falar com o outro antes de resolver.
@@ -75,128 +231,20 @@ Se houver conflito, o Git marca o ficheiro com `<<<<<<<`, `=======`, `>>>>>>>`. 
 - **Settings › Collaborators › Add people**: o Celso.
 - **Settings › Branches › Add rule** para `main`: "Require a pull request before merging" e "Require approvals: 1".
 
-## Tarefas por pessoa
-
-Prioridade: **D6** = tem de estar pronto para dia 6 (fases 1 e 2) · **F3/F4/F5** = fase do enunciado · **Ext** = extra · **Opc** = opcional.
-
-### Celso: mensagens, servidor e rega
-
-| # | Tarefa (branch) | Classes | O que é | O que exige | Pronta quando | Prior. |
-|---|---|---|---|---|---|---|
-| C1 | `feature/mensagens-base` | `Message`, `SensorMessage`, `OrderMessage`, `AckMessage` | classes-mãe de tudo o que viaja pelo socket | `Serializable`, `serialVersionUID`; usar `Areas` e `Type` do professor; `messageId` não final; `getType()` | compila; as filhas conseguem estender | **D6** (primeiro: o Fredson depende disto) |
-| C2 | `feature/mensagens-luz` | `LightSensorMessage`, `AreaLightingOrderMessage` | as duas mensagens do professor | `toString` exatamente `LightSensorMessage [light=320.0, area=LivingRoom, getType()=SENSOR]` | teste do formato passa | **D6** |
-| C3 | `feature/topic` | `Topic` | fila FIFO de uma área + subscritores (a "mesa" da aula 04) | todos os métodos `synchronized`; `wait` em `while`; `notifyAll`; espreitar a cabeça sem remover; cópia dos subscritores | grupo 1 do `IscotTests` passa (FIFO, ids) | **D6** |
-| C4 | `feature/topic-manager` | `TopicManager` | um `Topic` por área | `get(area)` `synchronized` (check-then-act) | o mesmo `Topic` para a mesma área | **D6** |
-| C5 | `feature/mensagens-outras` | `HumiditySensorMessage`, `TemperatureSensorMessage`, `AreaIrrigationOrderMessage`, `AreaClimateOrderMessage` | mensagens das outras automações | mesmo padrão do C2; o clima usa `AirConditioningMode` | compilam; `toString` no formato | D6 se der tempo, senão F4 |
-| C6 | `feature/registration` | `RegistrationMessage` | pedido (tipo, área) e resposta (id ou motivo) | métodos `request` e `reply`; recusar `null` e `DWC` | — | F3 |
-| C7 | `feature/server` | `Server`, `ClientHandler` (parte do registo) | servidor e thread por cliente | `accept` + `start()` por cliente; streams pela ordem certa; `newDeviceId` `synchronized` | 4 clientes recebem 4 ids diferentes | F3 |
-| C8 | `feature/client-handler` | `ClientHandler` (ciclo de mensagens) | publicar e receber acks | validar tipo e área de quem publica; `send` `synchronized` com `reset`; `finally` com `unsubscribe` | mensagens chegam ao tópico certo | F4 |
-| C9 | `feature/rega` | `HumiditySensor` (TODO), `IrrigationDecider`, `Irrigation` | automação da rega | seguir os moldes do professor; decisor com dois limiares | humidade baixa liga a rega | F4 |
-| C10 | `feature/dispatcher` | `TopicDispatcher` | entregar a cabeça a todos e esperar os acks | `setPending` antes de enviar; enviar sem cadeado; `await` com timeout | 2 lâmpadas confirmam; cliente parado → timeout | F5 |
-| C11 | `feature/teste-carga` | `IscotTests` grupo 3 | 10 threads × 1000 publicações | `join` antes de verificar | 10 000 mensagens, ids únicos | F5 |
-
-### Fredson: dispositivos, GUI e clima
-
-| # | Tarefa (branch) | Classes | O que é | O que exige | Pronta quando | Prior. |
-|---|---|---|---|---|---|---|
-| F1 | `feature/action-history` | `ActionHistory` | lista de ações do atuador com hora | `JPanel` com `JList`; `add` com `invokeLater`; formato `HH:mm:ss` | mostra "Lâmpada ligada - 21:43:05" | **D6** (pode começar já, não depende de ninguém) |
-| F2 | `feature/light` | `Light` (fase 1) | lâmpada, molde `Ventilator` | `LightIcon` + `ActionHistory`; ordem `AreaLightingOrderMessage` criada localmente, como o professor pede para a fase 1 | acende e apaga sozinha, com histórico | **D6** (depende de C2) |
-| F3 | `feature/light-sensor` | `LightSensor` (fase 1) | sensor de luz, molde `HumiditySensor` | `SensorControl` 0–1000 lux; o callback cria e imprime a `LightSensorMessage` | mexer o slider imprime a mensagem no formato do professor | **D6** (depende de C2) |
-| F4 | `feature/ventilador-fase1` | `Ventilator` (TODO da fase 1) | o exemplo do professor | ordem `AreaClimateOrderMessage` criada localmente + `ActionHistory` | liga e desliga com histórico | D6 se der tempo (depende de C5) |
-| F5 | `feature/teste-estrutura` | `IscotTests` grupo 1 | testes da fase 2 | formato das mensagens, FIFO, ids, tópicos separados | todos OK | **D6** (depende de C2–C4) |
-| F6 | `feature/broker-connection` | `BrokerConnection` | ligar, registar, enviar, receber, confirmar | streams pela ordem certa; `send` `synchronized`; uma thread recetora que confirma tudo | um `Light` regista-se e recebe um id | F3–F4 |
-| F7 | `feature/luz-rede` | `LightSensor`, `LightingDecider`, `Light` (com rede) | cenário completo do professor | decisor: < 500 lux acende; só envia quando muda | luz baixa acende as 2 lâmpadas | F4 |
-| F8 | `feature/clima` | `TemperatureSensor`, `ClimateDecider`, `Ventilator`, `AirConditioner` | automação do clima | `ACIcon.setModo` dentro de `invokeLater` | temperatura alta liga ventilador e AC | F4 |
-| F9 | `feature/teste-latch` | `IscotTests` grupo 2 | testes do latch | medir tempos | timeout e libertação certos | F5 |
-
-### Os dois
-
-| # | Tarefa (branch) | Classes | Como | Prior. |
-|---|---|---|---|---|
-| A1 | `feature/latch-celso` e `feature/latch-fredson` | `ModifiedCountdownLatch` | cada um escreve a sua versão sozinho; comparam numa chamada; fica a melhor (a outra branch é apagada) | F5 |
-| A2 | `feature/confirmacoes` | `ReceptionConfirmationMessage` + servidor | extra; dividir no momento | Ext |
-| A3 | `feature/monitor` (Fredson) | `ServerMonitorFrame` | só no fim | Opc |
-| A4 | `feature/formulario` (Fredson) | `TopicTestFrame` | só se sobrar tempo | Opc |
-
-## Ordem até dia 6
-
-```text
-ter 3 nov (hoje)   Celso: C1 e C2, com merge ainda hoje (o Fredson precisa delas)
-                   Fredson: F1 (não depende de ninguém)
-qua 4 nov          Celso: C3 e C4              Fredson: F2 e F3
-qui 5 nov          Celso: C5 se der            Fredson: F5 (testes); F4 se der
-                   à tarde: tudo na main; cada um explica as classes do outro
-                   à noite: ensaio de 5 min; git tag checkpoint-0 ; git push --tags
-sex 6 nov          apresentação
-```
-O mínimo para dia 6 é C1–C4 + F1–F3 + F5. C5 e F4 só se sobrar tempo.
-
-## As notas dentro de cada classe
-
-Cada uma das nossas classes (e os dois exemplos do professor, `HumiditySensor` e `Ventilator`) tem, logo no topo do comentário, um bloco **PLANO** com o mesmo formato:
-
-```text
-PLANO
-  Tarefa:       F2 · feature/light          ← o código da tarefa nestas tabelas e a branch
-  Responsável:  Fredson   ·   Revisor: Celso
-  Dia 6:        SIM (fase 1). Merge até qua 4 nov. ...   ← SIM / NÃO / OPCIONAL / SÓ A CLASSE
-  No dia 6:     o que esta classe mostra na apresentação
-  Depende de:   que tarefas têm de estar na main antes
-  Liga-se a:    que classes a usam ou são usadas por ela
-  Código base:  o que vem do professor ou o que mudou por causa dele
-```
-
-Por baixo do PLANO continuam as notas de sempre: o objetivo no enunciado, o que implementar, concorrência, alternativas, dúvidas e como testar. Antes de começar uma tarefa, ler a classe inteira.
-
-**Classes que entram no dia 6:** `Message`, `SensorMessage`, `OrderMessage`, `AckMessage` (só compilar), `LightSensorMessage`, `AreaLightingOrderMessage`, `Topic`, `TopicManager`, `ActionHistory`, `Light`, `LightSensor`, `IscotTests` (grupo 1). **Opcionais no dia 6:** as outras mensagens (C5) e a fase 1 do `Ventilator` (F4). Todas as outras dizem `Dia 6: NÃO`.
-
 ## Os ficheiros do professor: o que são e como os usamos
 
-Estes ficheiros **não têm notas nossas e não se alteram** (são o código base que o professor vai reconhecer). Exceção: `HumiditySensor` e `Ventilator`, que são exemplos com `TODO` para completarmos.
+Os ficheiros `enums` e `client/gui` **não têm notas nossas e não se alteram**. Exceção: `HumiditySensor` e `Ventilator`, que são exemplos com `TODO`.
 
 | Ficheiro | O que é | Como o usamos | Atenção |
 |---|---|---|---|
-| `enums/Areas` | as 5 áreas: `Kitchen, WC, LivingRoom, BedRoom, Garden` | campo `area` de todas as mensagens; chave dos tópicos; 3.º argumento de todos os programas | escreve-se exatamente assim nos argumentos (`LivingRoom`, não `sala`) |
-| `enums/Type` | `SENSOR, DECIDER, ACTUATOR, DWC` | `getType()` das mensagens; tipo na `RegistrationMessage` | `DWC` "pode ser ignorado": o servidor recusa-o |
-| `enums/AirConditioningMode` | `Ventilação, Frio, Aquecimento, Desligado` | campo `mode` da `AreaClimateOrderMessage` | — |
-| `client/gui/ComponentState` | base de todos os ícones: `setAtivo` / `isAtivo` | não se usa diretamente | `setAtivo` já usa `invokeLater`: pode ser chamado de qualquer thread |
-| `client/gui/LightIcon` | lâmpada: `setLigada(boolean)` | `Light` | intensidade: não usamos |
-| `client/gui/VentilatorIcon` | ventilador: `setLigado(boolean)` | `Ventilator` | — |
-| `client/gui/ACIcon` | ar condicionado: `setModo(AirConditioningMode)` | `AirConditioner` | `setModo` muda um campo fora do `invokeLater`; temperatura: não usamos |
-| `client/gui/IrrigationIcon` | rega: `setAtiva(boolean)` | `Irrigation` | zona e duração: não usamos |
-| `client/gui/SensorControl` | slider com nome, unidade, mínimo, máximo, passo, valor inicial e um callback | `LightSensor`, `HumiditySensor`, `TemperatureSensor` | o callback só é chamado quando o utilizador **larga** o slider, e corre na thread do Swing |
-| `client/HumiditySensor` | exemplo de sensor, com `TODO` | molde dos sensores; completamos os `TODO` na tarefa C9 | tem um `import` de `LightIcon` que não usa |
-| `client/Ventilator` | exemplo de atuador, com `TODO` (incluindo o da fase 1) | molde dos atuadores; completamos os `TODO` em F4 e F8 | tirar o `Thread.sleep(5000)` de demonstração quando a fase 1 estiver feita |
-
-## Como as peças do dia 6 se ligam
-
-Nada disto usa rede nem threads nossas. São três programas que se correm em separado no Eclipse.
-
-```mermaid
-flowchart LR
-  subgraph "04 Lampada LivingRoom (fase 1)"
-    L["Light (F2)"] --> LI["LightIcon (professor)"]
-    L --> AH["ActionHistory (F1)"]
-    L -- "cria localmente" --> ALO["AreaLightingOrderMessage (C2)"]
-  end
-  subgraph "02 Sensor luz LivingRoom (fase 1)"
-    LS["LightSensor (F3)"] --> SC["SensorControl (professor)"]
-    SC -- "callback ao largar o slider" --> LSM["LightSensorMessage (C2)"]
-  end
-  subgraph "12 Testes (fase 2)"
-    IT["IscotTests grupo 1 (F5)"] --> TM["TopicManager (C4)"]
-    TM --> TP["Topic LivingRoom (C3)"]
-    IT -- "publish / removeHead" --> TP
-  end
-  ALO --> M["Message, OrderMessage, SensorMessage (C1)"]
-  LSM --> M
-```
-
-O que liga tudo é o pacote `common`: as mensagens do Celso (C1 e C2) são usadas pela lâmpada e pelo sensor do Fredson e pelos testes. Por isso **C1 e C2 têm de entrar na `main` primeiro**, hoje.
-
-## O que mostrar no dia 6 com estas tarefas
-
-1. `04 Lampada LivingRoom` (duas vezes): a lâmpada acende e apaga com uma ordem criada localmente, e o histórico mostra `Lâmpada ligada - HH:MM:SS`. É exatamente o que o professor pede no `TODO` da fase 1.
-2. `02 Sensor luz LivingRoom`: mexer o slider imprime `LightSensorMessage [light=320.0, area=LivingRoom, getType()=SENSOR]`.
-3. `12 Testes`: mensagens a entrar nas filas da área, por ordem, com ids; "consumir a cabeça" tira a mais antiga.
-4. O diagrama de `docs/02-arquitetura.md`, para explicar o que vem a seguir.
+| `enums/Areas` | as 5 áreas | campo `area` dos eventos; 3.º argumento dos programas | escreve-se exatamente assim (`LivingRoom`, não `sala`) |
+| `enums/Type` | `SENSOR, DECIDER, ACTUATOR, DWC` | `getType()` dos eventos | `DWC` "pode ser ignorado" |
+| `enums/AirConditioningMode` | `Ventilação, Frio, Aquecimento, Desligado` | `AreaTemperatureOrderEvent`, `AirConditioner` | — |
+| `client/gui/ComponentState` | base dos ícones | não se usa diretamente | `setAtivo` usa `invokeLater`: o valor só muda depois |
+| `client/gui/LightIcon` | lâmpada: `setLigada` | `Light` | — |
+| `client/gui/VentilatorIcon` | ventilador: `setLigado` | `Ventilator` | — |
+| `client/gui/ACIcon` | ar condicionado: `setModo` | `AirConditioner` | desenha o mesmo símbolo em todos os modos ativos |
+| `client/gui/IrrigationIcon` | rega: `setAtiva` | `Irrigation` | — |
+| `client/gui/SensorControl` | slider com callback | sensores | as marcas mostram o número do passo, não o valor; o callback corre na thread do Swing |
+| `client/HumiditySensor` | exemplo de sensor | molde dos sensores; C5 | humidade do **ar** |
+| `client/Ventilator` | exemplo de atuador | molde dos atuadores; F4 | a demonstração com `sleep` é para substituir |

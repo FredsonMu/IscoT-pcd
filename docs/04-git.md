@@ -53,15 +53,15 @@ No Eclipse, o mesmo faz-se pela vista **Git Staging** (Window › Show View › 
 ## Regras do grupo
 
 1. **Nunca trabalhar diretamente na `main`.** A `main` tem sempre de compilar e correr.
-2. **Uma branch por tarefa**, com nome claro: `feature/topic`, `feature/actuator-frame`, `fix/stream-order`.
-3. **Commits pequenos** e com mensagem no imperativo a dizer o quê e porquê:
-   - bom: `Topic: espera com wait em while quando a fila está vazia`
+2. **Uma branch por tarefa**, com nome claro: `feature/light`, `feature/eventos-base`, `fix/formato-evento`.
+3. **Commits pequenos** e com mensagem a dizer o quê e porquê:
+   - bom: `ActionHistory: acrescenta a hora a cada ação`
    - mau: `alteracoes`, `update`, `funciona`
 4. **Pull antes de começar** e antes de fazer push.
 5. **Quem não escreveu, revê.** O PR só entra depois de o outro ler e conseguir explicar o código. É o nosso checkpoint técnico.
-6. **Cada um no seu pacote** sempre que possível (ver `06-plano.md`): reduz conflitos.
+6. **Cada um nas suas classes** sempre que possível (ver `09-tarefas-e-git.md`): reduz conflitos.
 7. **Não commitar `bin/`** nem ficheiros do workspace: o `.gitignore` já trata disso.
-8. Antes de cada apresentação, criar uma **tag**: `git tag checkpoint-1 && git push --tags`. Assim mostramos exatamente o que foi apresentado.
+8. Antes de cada apresentação, criar uma **tag**: `git tag entrega-intermedia` e `git push --tags`. Assim mostramos exatamente o que foi apresentado.
 
 ## Conflitos: o que fazer
 
