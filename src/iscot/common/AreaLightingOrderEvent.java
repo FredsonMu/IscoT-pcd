@@ -1,5 +1,7 @@
 package iscot.common;
 
+import iscot.enums.Areas;
+
 /**
  * AreaLightingOrderEvent — ordem para a iluminação de uma área. É O MODELO DAS OUTRAS ORDENS.
  *
@@ -48,5 +50,24 @@ package iscot.common;
  * NAS FASES SEGUINTES
  *   Cenário dos slides: uma única ordem é entregue às duas lâmpadas da sala.
  */
-public class AreaLightingOrderEvent {
+public class AreaLightingOrderEvent extends HighLevelOrderEvent {
+
+    private final boolean state;
+
+    /** Cria uma ordem para ligar ou desligar a iluminação. */
+    public AreaLightingOrderEvent(Areas area, boolean state) {
+        super(area);
+        this.state = state;
+    }
+
+    /** Devolve true para ligar e false para desligar. */
+    public boolean getState() {
+        return state;
+    }
+
+    /** Fornece a parte variável do texto desta ordem. */
+    @Override
+    protected String getEventFields() {
+        return "state=" + state;
+    }
 }

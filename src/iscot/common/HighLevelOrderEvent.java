@@ -1,5 +1,8 @@
 package iscot.common;
 
+import iscot.enums.Areas;
+import iscot.enums.Type;
+
 /**
  * HighLevelOrderEvent — classe-mãe, abstrata, das ordens de alto nível dos decisores.
  *
@@ -49,5 +52,16 @@ package iscot.common;
  *   Herança e especialização; desacoplamento: quem emite não conhece quem executa, a ideia
  *   central de um message broker.
  */
-public abstract class HighLevelOrderEvent {
+public abstract class HighLevelOrderEvent extends Event {
+
+    /** Cria uma ordem destinada à área indicada. */
+    protected HighLevelOrderEvent(Areas area) {
+        super(area);
+    }
+
+    /** Identifica todas as ordens como eventos de decisor. */
+    @Override
+    public final Type getType() {
+        return Type.DECIDER;
+    }
 }
