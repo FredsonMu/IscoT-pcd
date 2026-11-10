@@ -1,5 +1,8 @@
 package iscot.common;
 
+import iscot.enums.Areas;
+import iscot.enums.Type;
+
 /**
  * RegistrationEvent — o pedido de registo de um cliente no servidor.
  *
@@ -56,5 +59,22 @@ package iscot.common;
  *     A) Recusar no servidor, na fase 4. É onde o enunciado coloca a recusa. [sugestão]
  *     B) Recusar logo aqui. Falha mais cedo, mas o servidor fica sem nada para recusar.
  */
-public class RegistrationEvent {
+public class RegistrationEvent extends Event {
+
+    private final Type type;
+
+    /** Cria um pedido de registo para uma área e tipo de cliente. */
+    public RegistrationEvent(Areas area, Type type) {
+        super(area);
+        if (type == null) {
+            throw new IllegalArgumentException("O tipo não pode ser null.");
+        }
+        this.type = type;
+    }
+
+    /** Devolve o tipo do cliente que se pretende registar. */
+    @Override
+    public Type getType() {
+        return type;
+    }
 }
