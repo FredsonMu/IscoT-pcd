@@ -1,5 +1,8 @@
 package iscot.common;
 
+import iscot.enums.AirConditioningMode;
+import iscot.enums.Areas;
+
 /**
  * AreaTemperatureOrderEvent — ordem para aquecer ou arrefecer uma área.
  *
@@ -40,5 +43,27 @@ package iscot.common;
  *     A) Recusar no construtor. O compilador não apanha o erro, mas a execução sim.
  *     B) Aceitar e deixar o atuador decidir. Há duas maneiras de pedir a mesma coisa.
  */
-public class AreaTemperatureOrderEvent {
+public class AreaTemperatureOrderEvent extends HighLevelOrderEvent {
+
+    private final AirConditioningMode mode;
+
+    /** Cria uma ordem para aquecer, arrefecer ou desligar. */
+    public AreaTemperatureOrderEvent(Areas area, AirConditioningMode mode) {
+        super(area);
+        if (mode == null || mode == AirConditioningMode.Ventilação) {
+            throw new IllegalArgumentException("O modo deve ser Frio, Aquecimento ou Desligado.");
+        }
+        this.mode = mode;
+    }
+
+    /** Devolve o modo pretendido para o ar condicionado. */
+    public AirConditioningMode getMode() {
+        return mode;
+    }
+
+    /** Fornece a parte variável do texto desta ordem. */
+    @Override
+    protected String getEventFields() {
+        return "mode=" + mode;
+    }
 }
