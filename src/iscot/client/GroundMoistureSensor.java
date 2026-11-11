@@ -1,5 +1,14 @@
 package iscot.client;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import iscot.client.gui.SensorControl;
+import iscot.common.GroundMoistureSensorEvent;
+import iscot.enums.Areas;
+
 /**
  * GroundMoistureSensor — programa do sensor de humidade do solo.
  *
@@ -39,4 +48,32 @@ package iscot.client;
  *   Callback, lambda e thread do Swing. Ver as notas do LightSensor.
  */
 public class GroundMoistureSensor {
+
+    /** Inicia a janela que simula o sensor de humidade do solo. */
+    public static void main(String[] args) {
+        if (args.length != 3) {
+            System.err.println("Invalid arguments!");
+        } else {
+            Areas area = Areas.valueOf(args[2]);
+
+            JFrame janela = new JFrame("Humidade do solo em " + area);
+            janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            SensorControl sensorControl = new SensorControl("\uD83C\uDF31",
+                    "Humidade do solo - " + area, "%", 0, 100, 1, 50,
+                    valor -> {
+                        GroundMoistureSensorEvent evento =
+                                new GroundMoistureSensorEvent(area, valor);
+                        System.out.println(evento);
+                    });
+
+            JPanel painel = new JPanel(new BorderLayout());
+            painel.add(sensorControl, BorderLayout.CENTER);
+            janela.setContentPane(painel);
+            janela.setLocation(600, 400);
+            janela.setMinimumSize(janela.getSize());
+            janela.pack();
+            janela.setVisible(true);
+        }
+    }
 }
