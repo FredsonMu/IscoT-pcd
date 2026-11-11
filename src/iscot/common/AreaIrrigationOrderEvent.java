@@ -1,5 +1,7 @@
 package iscot.common;
 
+import iscot.enums.Areas;
+
 /**
  * AreaIrrigationOrderEvent — ordem de rega para uma área.
  *
@@ -31,5 +33,24 @@ package iscot.common;
  *     A) Só o estado. Chega para o que o enunciado pede. [sugestão]
  *     B) Estado, zona e duração, que o IrrigationIcon também suporta. Não é pedido.
  */
-public class AreaIrrigationOrderEvent {
+public class AreaIrrigationOrderEvent extends HighLevelOrderEvent {
+
+    private final boolean state;
+
+    /** Cria uma ordem para ligar ou desligar a rega. */
+    public AreaIrrigationOrderEvent(Areas area, boolean state) {
+        super(area);
+        this.state = state;
+    }
+
+    /** Devolve true para regar e false para parar. */
+    public boolean getState() {
+        return state;
+    }
+
+    /** Fornece a parte variável do texto desta ordem. */
+    @Override
+    protected String getEventFields() {
+        return "state=" + state;
+    }
 }

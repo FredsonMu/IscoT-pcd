@@ -1,5 +1,7 @@
 package iscot.common;
 
+import iscot.enums.Areas;
+
 /**
  * TemperatureSensorEvent — leitura de temperatura, em graus Celsius.
  *
@@ -34,5 +36,24 @@ package iscot.common;
  *   "se o termómetro deteta a ultrapassagem de dada temperatura, espoleta a ligação de um ar
  *   condicionado, para aquecer ou arrefecer".
  */
-public class TemperatureSensorEvent {
+public class TemperatureSensorEvent extends SensorEvent {
+
+    private final double temperature;
+
+    /** Cria uma leitura de temperatura em graus Celsius. */
+    public TemperatureSensorEvent(Areas area, double temperature) {
+        super(area);
+        this.temperature = temperature;
+    }
+
+    /** Devolve a temperatura medida. */
+    public double getTemperature() {
+        return temperature;
+    }
+
+    /** Fornece a parte variável do texto deste evento. */
+    @Override
+    protected String getEventFields() {
+        return "temperature=" + temperature;
+    }
 }

@@ -1,5 +1,7 @@
 package iscot.common;
 
+import iscot.enums.Areas;
+
 /**
  * AreaVentilationOrderEvent — ordem de ventilação para uma área.
  *
@@ -32,5 +34,24 @@ package iscot.common;
  *   Passo 3 · Confirmar
  *     O texto corresponde ao formato acima.
  */
-public class AreaVentilationOrderEvent {
+public class AreaVentilationOrderEvent extends HighLevelOrderEvent {
+
+    private final boolean state;
+
+    /** Cria uma ordem para ligar ou desligar a ventilação. */
+    public AreaVentilationOrderEvent(Areas area, boolean state) {
+        super(area);
+        this.state = state;
+    }
+
+    /** Devolve true para ventilar e false para parar. */
+    public boolean getState() {
+        return state;
+    }
+
+    /** Fornece a parte variável do texto desta ordem. */
+    @Override
+    protected String getEventFields() {
+        return "state=" + state;
+    }
 }

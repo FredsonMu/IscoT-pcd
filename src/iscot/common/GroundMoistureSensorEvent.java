@@ -1,5 +1,7 @@
 package iscot.common;
 
+import iscot.enums.Areas;
+
 /**
  * GroundMoistureSensorEvent — leitura da humidade do SOLO, em percentagem.
  *
@@ -29,5 +31,24 @@ package iscot.common;
  *   "se o sensor de humidade no solo avisar que a terra está seca, o agente decisor da rega
  *   define uma ordem de irrigação, e os atuadores ligam a irrigação do jardim".
  */
-public class GroundMoistureSensorEvent {
+public class GroundMoistureSensorEvent extends SensorEvent {
+
+    private final double moisture;
+
+    /** Cria uma leitura de humidade do solo em percentagem. */
+    public GroundMoistureSensorEvent(Areas area, double moisture) {
+        super(area);
+        this.moisture = moisture;
+    }
+
+    /** Devolve a humidade do solo medida. */
+    public double getMoisture() {
+        return moisture;
+    }
+
+    /** Fornece a parte variável do texto deste evento. */
+    @Override
+    protected String getEventFields() {
+        return "moisture=" + moisture;
+    }
 }
