@@ -1,5 +1,14 @@
 package iscot.client;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import iscot.client.gui.IrrigationIcon;
+import iscot.common.AreaIrrigationOrderEvent;
+import iscot.enums.Areas;
+
 /**
  * Irrigation — programa do atuador de rega.
  *
@@ -48,4 +57,55 @@ package iscot.client;
  *   Os nomes dos métodos variam entre ícones: setLigada, setLigado, setAtiva, setModo.
  */
 public class Irrigation {
+
+    /** O ícone do professor que representa o estado da rega. */
+    private final IrrigationIcon icon = new IrrigationIcon();
+
+    /** O histórico reutilizável das ações deste atuador. */
+    private final ActionHistory history = new ActionHistory();
+
+    /** Estado lógico da rega, separado do desenho do ícone. */
+    private boolean ativa = false;
+
+    /** Cria a janela da rega para a área indicada. */
+    public Irrigation(Areas area) {
+        JFrame janela = new JFrame("Rega em " + area);
+        janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel painel = new JPanel(new BorderLayout());
+        painel.add(icon, BorderLayout.CENTER);
+        painel.add(history, BorderLayout.SOUTH);
+        janela.setContentPane(painel);
+        janela.setLocation(600, 400);
+        janela.setMinimumSize(janela.getSize());
+        janela.pack();
+        janela.setVisible(true);
+    }
+
+    /** Aplica uma ordem de rega e regista-a quando o estado muda. */
+    public void aplicarOrdem(AreaIrrigationOrderEvent ordem) {
+        if (ordem.getState() == ativa) {
+            return;
+        }
+
+        ativa = ordem.getState();
+        icon.setAtiva(ativa);
+        history.addAction(ativa ? "Rega ligada" : "Rega desligada");
+    }
+
+    /** Cria ordens locais de exemplo para a demonstração da fase 3. */
+    public static void main(String[] args) throws InterruptedException {
+        if (args.length != 3) {
+            System.err.println("Invalid arguments!");
+        } else {
+            Areas area = Areas.valueOf(args[2]);
+            Irrigation irrigation = new Irrigation(area);
+
+            boolean[] ordens = {true, false, true};
+            for (boolean ligar : ordens) {
+                Thread.sleep(3000);
+                irrigation.aplicarOrdem(new AreaIrrigationOrderEvent(area, ligar));
+            }
+        }
+    }
 }
